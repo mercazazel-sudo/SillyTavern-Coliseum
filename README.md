@@ -92,3 +92,10 @@ One SillyTavern extension with two full visual styles: ancient Coliseum and medi
 ## Лицензии
 
 Код: MIT, см. [LICENSE](LICENSE). Сведения о графике и шрифтах: [ASSETS-NOTICE.md](ASSETS-NOTICE.md); лицензии открытых шрифтов лежат в `assets/fonts/licenses/`.
+
+## Благодарности
+
+Отдельное спасибо Сливе, автору расширения «Пудреница», которое позже стало «Закулисьем». Именно её работа вдохновила меня на собственное расширение и подсказала саму идею. Без неё я, возможно, так и не узнал бы о SillyTavern.
+
+- Расширение Сливы: [SillyTavern-Zakulisie](https://github.com/lvslivnaya-dev/SillyTavern-Zakulisie)
+- Её Telegram-канал: [@gde_sliva](https://t.me/gde_sliva)
