@@ -133,7 +133,7 @@ export function startChatMenu(doc, { settings, save, shared }) {
       const all = items();
       const groups = ['Чат', 'Расширения'];
       pane.innerHTML = `<h3>Меню чата</h3>
-        <p class="col-note">Одно меню на кнопке-колонне слева от поля ввода. Выключенные пункты в нём не показываются; снова включить можно здесь.</p>
+        <p class="col-note">Одно меню на кнопке-свитке слева от поля ввода. Выключенные пункты в нём не показываются; снова включить можно здесь.</p>
         <div class="col-btnrow col-msave"><button type="button" class="col-btn col-primary" data-menu="save">Сохранить</button><span class="col-note" data-menu-note></span></div>
         <div class="col-btnrow"><button type="button" class="col-btn" data-menu="all">Показать всё</button><button type="button" class="col-btn" data-menu="regen">Оставить только перегенерацию</button></div>
         ${groups.map(g => {

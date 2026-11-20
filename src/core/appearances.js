@@ -47,7 +47,7 @@ export const APPEARANCE_PROFILES = Object.freeze({
   }),
   camelot: Object.freeze({
     id: 'camelot', title: 'Камелот', description: 'Камень, зубцы, стрельчатые арки и драконы',
-    defaultPalette: 'limestone', defaultBackground: 'cathedral', palettes: CAMELOT_PALETTES,
+    defaultPalette: 'limestone', defaultBackground: 'tiles', palettes: CAMELOT_PALETTES,
     backgrounds: Object.freeze([['ashlar', 'Кладка «Крепостная стена»'], ['chain', 'Кольчуга «Стража»'], ['cathedral', 'Мозаика «Собор»'], ['flags', 'Плиты «Большой зал»'], ['tiles', 'Плиты «Эмаль»'], ['imgmosaic', 'Мозаика: своё изображение'], ['img', 'Свой фон']]),
     labels: Object.freeze({ ...commonLabels, brand: 'Камелот', settings: 'Цитадель', home: 'Большой зал', chars: 'Двор', lore: 'Скрипторий', loreedit: 'Свиток Скриптория', ext: 'Кузница' }),
     helperSet: 'fantasy',

@@ -1521,3 +1521,6 @@ body.col-on #completion_prompt_manager_popup.col-pm-docked.col-win-home { backgr
 body.col-on #completion_prompt_manager_popup.col-pm-docked:not(.col-win-lib):not(.col-win-pop):not(.col-win-home) { background: var(--col-card); border: 1px solid var(--col-gold); }
 body.col-on #completion_prompt_manager_popup.col-pm-docked .col-pm-head { min-height: 42px; box-sizing: border-box; }
 body.col-on #completion_prompt_manager_popup.col-pm-docked > div:not(.col-pm-head) { max-height: none; }
+
+/* пункт «Проверить соединение»: пока идёт проверка, слегка приглушён */
+#options #col_option_check_api.col-busy { opacity: .55; pointer-events: none; }

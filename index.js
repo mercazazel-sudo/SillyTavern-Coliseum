@@ -12,6 +12,7 @@ import { startInputBar } from './src/ui/inputbar.js';
 import { startChatMenu } from './src/ui/chatmenu.js';
 import { startRegenNote } from './src/ui/regen-note.js';
 import { startLockPersona } from './src/ui/lock-persona.js';
+import { startCheckApi } from './src/ui/check-api.js';
 import { startExtensionsLib } from './src/ui/extensions-lib.js';
 import { startLoreLib } from './src/ui/lore-lib.js';
 import { startLoreEditor } from './src/ui/lore-editor.js';
@@ -39,6 +40,7 @@ const MODULES = [
   { name: 'меню чата', start: deps => startChatMenu(document, deps) },
   { name: 'перегенерация с правкой', start: deps => startRegenNote(document, deps) },
   { name: 'закрепление маски за чатом', start: () => startLockPersona(document) },
+  { name: 'проверка соединения', start: () => startCheckApi(document) },
   { name: 'колонна', start: deps => startSidebar(document, deps) },
   { name: 'разбор лорбуков', start: deps => startLoreTrace(document, deps) },
   { name: 'под рукой', start: deps => startHand(document, deps) },
