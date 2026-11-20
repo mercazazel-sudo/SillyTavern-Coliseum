@@ -1,0 +1,195 @@
+/* Помощники: кругляшок, окно чата, редактор. Цвета берутся из токенов палитры Колизея (--col-*), поэтому окно меняется вместе с темой. Подключается из src/helpers/index.js. */
+.spt-root { --spt-bg: var(--col-card, #1e1e24); --spt-text: var(--col-ink, #e6e6e6); --spt-soft: var(--col-ink2, #b9b9c2); --spt-line: var(--col-line, rgba(255,255,255,.18)); --spt-gold: var(--col-gold, #a8812c); --spt-gold2: var(--col-gold2, #c9a24a); --spt-accent: var(--col-accent, #8fa8ff); --spt-accent-ink: var(--col-accent-ink, #111); --spt-tint: var(--col-tint, rgba(255,255,255,.08)); --spt-warn: var(--col-warn, #d65050); }
+.spt-root [hidden] { display: none !important; }
+.spt-root[hidden] { display: none !important; }
+
+/* кругляшок */
+.spt-bubble { position: fixed; z-index: 3500; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: transparent; box-shadow: 0 4px 14px rgba(0,0,0,.45); cursor: grab; touch-action: none; overflow: hidden; transition: box-shadow .15s, transform .15s; }
+.spt-bubble:hover { transform: scale(1.06); box-shadow: 0 6px 18px rgba(0,0,0,.55); }
+.spt-bubble:active { cursor: grabbing; }
+.spt-avatar { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 50%; color: #fff; font: 700 1.25em var(--col-f-head, serif); background-size: cover; background-position: center; user-select: none; }
+.spt-avatar-img { background-color: transparent; background-repeat: no-repeat; box-shadow: inset 0 0 0 3px var(--spt-gold), inset 0 0 0 5px rgba(0,0,0,.4); }
+.spt-bubble, .spt-vibe { border-radius: 50%; }
+
+/* окно */
+.spt-window { position: fixed; z-index: 3499; display: flex; flex-direction: column; border: 1px solid var(--spt-gold); border-radius: 3px; background: var(--spt-bg); color: var(--spt-text); font: 17px/1.35 var(--col-f-text, Georgia, serif); box-shadow: 0 0 0 3px var(--spt-bg), 0 0 0 4px var(--spt-line), 0 12px 34px var(--col-shadow, rgba(0,0,0,.5)); overflow: hidden; }
+.spt-header { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-bottom: 1px solid var(--spt-gold); background: var(--col-tint, transparent); }
+.spt-vibes { display: flex; gap: 6px; max-width: 52%; overflow-x: auto; scrollbar-width: thin; padding: 2px; }
+.spt-vibe { flex: none; width: 36px; height: 36px; padding: 0; border: 2px solid transparent; background: transparent; cursor: pointer; opacity: .65; overflow: hidden; }
+.spt-vibe .spt-avatar { font-size: .9em; }
+.spt-vibe:hover { opacity: .95; }
+.spt-vibe-on { opacity: 1; border-color: var(--spt-gold2); }
+.spt-vibe-add { display: flex; align-items: center; justify-content: center; border: 2px dashed var(--spt-line); color: inherit; font-size: 1.1em; line-height: 1; }
+.spt-title { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.15; }
+.spt-title-name { font: 400 1.15em var(--col-f-head, serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-title-tag { font-style: italic; font-size: .85em; color: var(--spt-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-head-tools { display: flex; gap: 4px; }
+.spt-icon-btn { padding: 3px 9px; margin: 0; width: auto; height: auto; min-height: 0; border: 1px solid var(--spt-line); border-bottom-color: var(--spt-gold); border-radius: 3px; background: transparent; color: inherit; font: italic .85em var(--col-f-text, serif); cursor: pointer; }
+.spt-icon-btn:hover { border-color: var(--spt-gold); }
+.spt-icon-btn[hidden] { display: none; }
+
+/* сообщения */
+.spt-messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.spt-msg { max-width: 88%; padding: 7px 11px; border: 1px solid var(--spt-line); border-radius: 3px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.35; font-size: .95em; }
+.spt-msg-assistant { align-self: flex-start; background: var(--spt-tint); }
+.spt-msg-user { align-self: flex-end; background: color-mix(in srgb, var(--spt-accent) 16%, var(--spt-bg)); }
+.spt-msg-error { border-color: var(--spt-warn); background: color-mix(in srgb, var(--spt-warn) 16%, var(--spt-bg)); }
+.spt-msg strong { font-weight: 700; }
+.spt-pending { opacity: .6; }
+.spt-greeting { font-style: italic; opacity: .9; }
+.spt-attached { margin-top: 4px; font-size: .8em; opacity: .7; font-style: italic; }
+
+/* вложения и ввод */
+.spt-attach-row { display: flex; gap: 6px; padding: 6px 10px 0; }
+.spt-attach-btn { padding: 2px 10px; border: 1px solid var(--spt-line); border-radius: 999px; background: none; color: inherit; font: italic .85em var(--col-f-text, serif); cursor: pointer; }
+.spt-attach-btn:hover:not(:disabled) { border-color: var(--spt-gold); }
+.spt-attach-btn:disabled { opacity: .35; cursor: not-allowed; }
+.spt-attach-on { background: var(--spt-accent); color: var(--spt-accent-ink); border-color: var(--spt-accent); }
+.spt-form { display: flex; gap: 8px; padding: 8px 10px; border-top: 1px solid var(--spt-gold); align-items: flex-end; }
+.spt-input { flex: 1; min-height: 38px; max-height: 120px; resize: none; margin: 0; padding: 6px 8px; border: 1px solid var(--spt-line); border-radius: 3px; background: var(--col-page, transparent); color: inherit; font: inherit; }
+.spt-send { padding: 7px 14px; margin: 0; width: auto; height: auto; min-height: 0; border: 1px solid var(--spt-accent); border-bottom-color: var(--spt-gold2); border-radius: 3px; background: var(--spt-accent); color: var(--spt-accent-ink); font: inherit; cursor: pointer; }
+.spt-send-stop { background: var(--spt-warn); border-color: var(--spt-warn); color: #fff; }
+
+/* редактор помощника */
+.spt-editor { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; }
+.spt-ed-title { margin: 0; font: 400 1.15em var(--col-f-head, serif); }
+.spt-ed-note { margin: 0; font-style: italic; font-size: .88em; color: var(--spt-soft); }
+.spt-ed-note:empty { display: none; }
+.spt-ed-field { display: flex; flex-direction: column; gap: 3px; }
+.spt-ed-label { font-style: italic; font-size: .85em; color: var(--spt-soft); }
+.spt-ed-input, .spt-ed-area { width: 100%; box-sizing: border-box; margin: 0; padding: 5px 8px; border: 1px solid var(--spt-line); border-radius: 3px; background: var(--col-page, transparent); color: inherit; font: inherit; }
+.spt-ed-area { resize: vertical; min-height: 44px; }
+.spt-ed-color { width: 48px; height: 28px; padding: 0; border: 1px solid var(--spt-line); border-radius: 3px; background: none; cursor: pointer; }
+.spt-ed-avatar-row { display: flex; align-items: center; gap: 8px; }
+.spt-ed-avatar { width: 56px; height: 56px; flex: none; }
+.spt-ed-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-top: 4px; }
+.spt-ed-danger { color: var(--spt-warn); border-color: var(--spt-warn); margin-left: auto; }
+.spt-ed-message { margin: 0; min-height: 1.2em; font-size: .9em; }
+.spt-ed-message:empty { display: none; }
+.spt-ed-bad { color: var(--spt-warn); }
+
+/* вкладка «Помощники» в Акрополе */
+.spt-setcard { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.spt-setfaces { display: flex; gap: 6px; justify-content: center; }
+.spt-setfaces .spt-avatar { width: 40px; height: 40px; flex: none; font-size: 1em; }
+.col-set .col-frow input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--col-gold); }
+
+@media (max-width: 600px) { .spt-vibe { width: 32px; height: 32px; } }
+
+/* Аватар с запечённой рамкой (античный набор): без CSS-кольца и без тени, чтобы рамка не двоилась */
+.spt-avatar-framed { box-shadow: none; background-color: transparent; }
+.spt-bubble:has(.spt-avatar-framed) { box-shadow: none; overflow: visible; filter: drop-shadow(0 3px 6px rgba(0,0,0,.45)); }
+
+/* Шапка в две строки: собеседник (аватар, имя, подпись) сверху, переключатель помощников снизу */
+.spt-header { flex-direction: column; align-items: stretch; gap: 6px; }
+.spt-head-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.spt-head-avatar { width: 46px; height: 46px; flex: none; font-size: 1.1em; }
+.spt-title-name { font: italic 400 1.3em var(--col-f-name, var(--col-f-head, serif)); }
+.spt-vibes { max-width: none; justify-content: flex-start; }
+/* имя собеседника над репликой */
+.spt-msg-name { margin-bottom: 2px; font: italic 400 .95em var(--col-f-name, var(--col-f-head, serif)); color: var(--spt-gold2); }
+.spt-pending .spt-msg-name, .spt-msg-error .spt-msg-name { opacity: .85; }
+
+/* Правка по скриншоту Азазеля: шапка в одну строку (переключатель, имя, закрыть), кнопки внизу, меню вложений, квадратная отправка */
+.spt-header { flex-direction: row; align-items: center; gap: 10px; }
+.spt-vibes { max-width: 58%; }
+.spt-title { flex: 1; min-width: 0; }
+.spt-title-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-attach-row { justify-content: flex-start; }
+.spt-form { position: relative; align-items: flex-end; }
+.spt-menu-btn, .spt-send { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; min-height: 0; padding: 0; margin: 0; border: 1px solid var(--spt-line); border-bottom-color: var(--spt-gold); border-radius: 3px; cursor: pointer; }
+.spt-menu-btn { background: transparent; color: inherit; }
+.spt-menu-btn:hover { border-color: var(--spt-gold); }
+.spt-menu-btn.spt-attach-on { background: var(--spt-accent); color: var(--spt-accent-ink); border-color: var(--spt-accent); }
+.spt-send svg, .spt-menu-btn svg { display: block; pointer-events: none; }
+.spt-menu { position: absolute; left: 10px; bottom: calc(100% - 2px); z-index: 2; min-width: 210px; display: flex; flex-direction: column; padding: 4px; border: 1px solid var(--spt-gold); border-radius: 3px; background: var(--spt-bg); box-shadow: 0 6px 18px var(--col-shadow, rgba(0,0,0,.5)); }
+.spt-menu-item { text-align: left; width: 100%; height: auto; min-height: 0; margin: 0; padding: 7px 10px; border: 0; border-radius: 2px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.spt-menu-item:hover:not(:disabled) { background: var(--spt-tint); }
+.spt-menu-item:disabled { opacity: .4; cursor: not-allowed; }
+.spt-menu-item.spt-attach-on { background: var(--spt-accent); color: var(--spt-accent-ink); }
+
+/* Нижней полоски нет: «Копия/Изменить» и «Очистить» живут в меню под разделителем */
+.spt-menu-sep { height: 1px; margin: 4px 6px; background: var(--spt-line); }
+
+/* Поле ввода и кнопки сведены в одну рамку одной высоты: меню | поле | отправка */
+.spt-form { display: block; padding: 8px 10px 10px; }
+.spt-composer { display: flex; align-items: stretch; border: 1px solid var(--spt-line); border-bottom-color: var(--spt-gold); border-radius: 3px; background: var(--col-page, transparent); overflow: hidden; transition: border-color .15s; }
+.spt-composer:focus-within { border-color: var(--spt-gold); }
+.spt-composer .spt-input { flex: 1; min-width: 0; min-height: 56px; max-height: 140px; margin: 0; padding: 9px 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; outline: none; resize: none; }
+.spt-composer .spt-menu-btn, .spt-composer .spt-send { width: 46px; height: auto; min-height: 0; align-self: stretch; border: 0; border-radius: 0; }
+.spt-composer .spt-menu-btn { border-right: 1px solid var(--spt-line); }
+.spt-composer .spt-menu-btn:hover { background: var(--spt-tint); }
+.spt-composer .spt-send { border-left: 1px solid var(--spt-gold); }
+.spt-composer .spt-send:hover { filter: brightness(1.08); }
+.spt-menu { left: 10px; bottom: calc(100% - 8px); }
+
+/* Форма создания и правки помощника теперь живёт в Акрополе: переменные берём и там */
+.spt-editor { --spt-bg: var(--col-card, #1e1e24); --spt-text: var(--col-ink, #e6e6e6); --spt-soft: var(--col-ink2, #b9b9c2); --spt-line: var(--col-line, rgba(255,255,255,.18)); --spt-gold: var(--col-gold, #a8812c); --spt-gold2: var(--col-gold2, #c9a24a); --spt-accent: var(--col-accent, #8fa8ff); --spt-accent-ink: var(--col-accent-ink, #111); --spt-tint: var(--col-tint, rgba(255,255,255,.08)); --spt-warn: var(--col-warn, #d65050); color: var(--col-ink); font-family: var(--col-f-text, Georgia, serif); }
+.col-pane .spt-editor { overflow: visible; padding: 0; flex: none; }
+.spt-hlist { display: flex; flex-direction: column; gap: 6px; margin: 6px 0 10px; }
+.spt-hrow { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border: 1px solid var(--col-line); border-radius: 3px; background: var(--col-card); }
+.spt-hrow .spt-avatar { width: 36px; height: 36px; flex: none; font-size: .95em; }
+.spt-hname { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+.spt-hname b { font: italic 400 1.05em var(--col-f-name, serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-hname small { font-style: italic; color: var(--col-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-editor[hidden], .col-pane [data-h="main"][hidden] { display: none !important; }
+
+/* Имя только в шапке; запас по краям, чтобы выступы курсива и верх заглавных букв не обрезались */
+.spt-title-name { padding: 3px 10px 3px 2px; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spt-title { overflow: visible; }
+
+/* Имя: меньше, аккуратнее, прижато к правому краю шапки; запас снизу под хвостик «Ф» и других выступающих букв курсива */
+.spt-title { flex: 1; min-width: 0; display: flex; justify-content: flex-end; text-align: right; }
+.spt-title-name { display: block; max-width: 100%; font-size: 1.08em; font-weight: 400; letter-spacing: .02em; line-height: 1.6; padding: .12em .45em .38em .1em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Поле ввода, второй проход: общая рамка, кнопки не плитами на всю высоту, а компактными квадратами с отступом и по центру */
+.spt-composer { align-items: center; gap: 6px; padding: 6px; border-radius: 4px; overflow: visible; }
+.spt-composer .spt-input { align-self: stretch; min-height: 50px; padding: 8px 6px; line-height: 1.35; }
+.spt-composer .spt-input::placeholder { color: var(--col-faint, #8d8a96); font-style: italic; opacity: 1; }
+.spt-composer .spt-menu-btn, .spt-composer .spt-send { width: 38px; height: 38px; align-self: center; border: 0; border-radius: 3px; }
+.spt-composer .spt-menu-btn { background: transparent; color: var(--spt-soft); }
+.spt-composer .spt-menu-btn:hover { background: var(--spt-tint); color: var(--spt-text); }
+.spt-composer .spt-menu-btn.spt-attach-on { background: var(--spt-accent); color: var(--spt-accent-ink); }
+.spt-composer .spt-send { box-shadow: inset 0 -2px 0 var(--spt-gold2); }
+.spt-composer .spt-send.spt-send-stop { box-shadow: none; }
+.spt-menu { left: 6px; bottom: calc(100% - 6px); }
+
+/* Поле в одну строку на одной линии с кнопками, растёт при наборе; подсказка цветом палитры, не сиреневая */
+.spt-composer { align-items: flex-end; }
+.spt-composer .spt-input { align-self: flex-end; box-sizing: border-box; height: 40px; min-height: 40px; max-height: 140px; padding: 8px 6px; overflow-y: auto; }
+.spt-composer .spt-menu-btn, .spt-composer .spt-send { width: 40px; height: 40px; align-self: flex-end; }
+.spt-root .spt-composer .spt-input::placeholder { color: var(--col-faint, #8d8a96) !important; font-style: italic; opacity: 1; }
+
+/* Навык «собрать персонажа»: карточка-набросок под ответом помощника */
+.spt-card { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--spt-gold); border-radius: 3px; background: var(--spt-bg); }
+.spt-card-title { font: italic 400 1.05em var(--col-f-name, var(--col-f-head, serif)); color: var(--spt-gold2); }
+.spt-card-note { margin-top: 2px; font-size: .88em; font-style: italic; color: var(--spt-soft); }
+.spt-card-more { margin: 6px 0; font-size: .92em; }
+.spt-card-more summary { cursor: pointer; color: var(--spt-soft); }
+.spt-card-h { margin-top: 6px; font-style: italic; color: var(--spt-gold2); }
+.spt-card-t { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 180px; overflow-y: auto; }
+.spt-card-btn { margin-top: 4px; padding: 6px 12px; height: auto; min-height: 0; border: 1px solid var(--spt-accent); border-bottom-color: var(--spt-gold2); border-radius: 3px; background: var(--spt-accent); color: var(--spt-accent-ink); font: inherit; cursor: pointer; }
+.spt-card-btn:disabled { opacity: .6; cursor: default; }
+.spt-card-btn[hidden] { display: none; }
+.spt-card-status { margin-top: 6px; font-size: .9em; }
+.spt-card-status:empty { display: none; }
+.spt-card-bad, .spt-card-bad.spt-card-status { color: var(--spt-warn); }
+.spt-card.spt-card-bad { border-color: var(--spt-warn); }
+
+/* Справка во вкладке «Помощники» */
+.spt-help { margin: 8px 0 14px; border: 1px solid var(--col-line); border-radius: 3px; background: var(--col-card); }
+.spt-help > summary { padding: 9px 12px; cursor: pointer; font: italic 400 1.1em var(--col-f-name, var(--col-f-head, serif)); }
+.spt-help-body { padding: 2px 14px 12px; }
+.spt-help-body h5 { margin: 12px 0 4px; font: 400 1em var(--col-f-head, serif); letter-spacing: .04em; color: var(--col-gold); text-transform: uppercase; }
+.spt-help-body p, .spt-help-body li { margin: 3px 0; line-height: 1.4; }
+.spt-help-body ul { margin: 3px 0 3px 18px; padding: 0; }
+
+/* окно помощника переносится за шапку */
+.spt-header { cursor: grab; touch-action: none; user-select: none; }
+.spt-header button, .spt-header input { cursor: pointer; }
+.spt-window.spt-dragging { cursor: grabbing; }
+.spt-window.spt-dragging .spt-header { cursor: grabbing; }
+
+/* форма «Создать помощника»: «Сохранить» обычная кнопка с подписью, а не квадрат 40x40 от кнопки отправки в окне чата */
+.spt-editor .spt-send { display: inline-flex; align-items: center; justify-content: center; width: auto; height: auto; min-width: 0; min-height: 0; padding: 7px 22px; margin: 0; border-radius: 3px; font: italic 18px var(--col-f-text, inherit); white-space: nowrap; background: var(--spt-accent); color: var(--spt-accent-ink); border: 1px solid var(--spt-accent); border-bottom-color: var(--spt-gold2); box-shadow: none; }
+.spt-editor .spt-send:hover { filter: brightness(1.1); }

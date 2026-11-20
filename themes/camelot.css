@@ -1,0 +1,157 @@
+/* Камелот. Переносится из mockup/index-fortress.html, а не сочиняется поверх Колизея. */
+body.col-on[data-col-appearance="camelot"] {
+  --col-f-text: 'Alegreya', 'Cormorant Garamond', Georgia, serif;
+  --col-f-head: 'Alegreya SC', 'Forum', Georgia, serif;
+  --col-f-name: 'Alegreya', 'Playfair Display', Georgia, serif;
+  --col-f-brand: 'Redraw Camelot Mercaz', 'Cormorant Unicase', 'Alegreya SC', Georgia, serif;
+  --col-arch: polygon(0 100%, 0 53.17%, .29% 48.21%, 1.16% 43.3%, 2.59% 38.46%, 4.59% 33.74%, 7.13% 29.17%, 10.2% 24.78%, 13.76% 20.61%, 17.8% 16.69%, 22.28% 13.06%, 27.17% 9.73%, 32.43% 6.74%, 38.01% 4.11%, 43.89% 1.86%, 50% 0, 56.11% 1.86%, 61.99% 4.11%, 67.57% 6.74%, 72.83% 9.73%, 77.72% 13.06%, 82.2% 16.69%, 86.24% 20.61%, 89.8% 24.78%, 92.87% 29.17%, 95.41% 33.74%, 97.41% 38.46%, 98.84% 43.3%, 99.71% 48.21%, 100% 53.17%, 100% 100%);
+  --col-arch-ring: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 133' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='black'%3E%3Cpath d='M1 133V70.3A73.5 73.5 0 0 1 50 1A73.5 73.5 0 0 1 99 70.3V133Z' stroke-width='2.4' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M6 127V68.2A66 66 0 0 1 50 6A66 66 0 0 1 94 68.2V127Z' stroke-width='1' vector-effect='non-scaling-stroke'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Башня: тот же размер и ритм, что в последнем макете. */
+body.col-on[data-col-appearance="camelot"] #col-side { background: linear-gradient(180deg, var(--col-side), var(--col-side2)); }
+body.col-on[data-col-appearance="camelot"] .col-cap,
+body.col-on[data-col-appearance="camelot"] .col-base { display: block; position: relative; z-index: 2; }
+body.col-on[data-col-appearance="camelot"] .col-shaft {
+  left: 14px; right: 14px; top: 50px; bottom: 34px;
+  border-inline: 1px solid var(--col-st-ln);
+  background-image: linear-gradient(90deg, var(--col-cyl), transparent 22%, transparent 78%, var(--col-cyl)), linear-gradient(180deg, var(--col-side), var(--col-side2));
+  background-size: 100% 100%, 100% 100%; background-repeat: no-repeat, no-repeat;
+}
+body.col-on[data-col-appearance="camelot"] .col-shaft .col-bricks { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+body.col-on[data-col-appearance="camelot"] .col-brand { margin: 0 14px; padding: 16px 24px 4px; }
+body.col-on[data-col-appearance="camelot"] .col-brand h1 { font: 400 38px/1.1 var(--col-f-brand); letter-spacing: .06em; text-transform: uppercase; color: var(--col-ink); }
+body.col-on[data-col-appearance="camelot"] .col-nav a { font: italic 19.5px var(--col-f-text); }
+body.col-on[data-col-appearance="camelot"] .col-nav a span small { font-family: var(--col-f-head); font-size: 12.5px; }
+body.col-on[data-col-appearance="camelot"] .col-nav [data-item="masks"] svg { width: 30px; height: 30px; margin: -4px; color: currentColor; }
+
+/* Окна-крепости: каменные стены, цельные зубцы и золотая кромка. */
+body.col-on[data-col-appearance="camelot"] .col-win {
+  overflow: visible;
+  background: var(--col-card); border: 1px solid var(--col-gold); border-radius: 0;
+  box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb, var(--col-gold) 55%, transparent), 0 24px 50px -18px var(--col-shadow);
+}
+body.col-on[data-col-appearance="camelot"] .col-wh { margin: 0; background: linear-gradient(var(--col-st-lo), var(--col-st-mid)); border-bottom: 1px solid var(--col-gold); font-family: var(--col-f-head); letter-spacing: .04em; }
+body.col-on[data-col-appearance="camelot"] .col-wb { outline: 1px solid color-mix(in srgb, var(--col-st-ln) 60%, transparent); outline-offset: -8px; }
+body.col-on[data-col-appearance="camelot"] .col-win-pop .col-wh { border-radius: 0; margin: 0; box-shadow: none; }
+
+/* Главная из последнего макета: узкая композиция, крепостная шапка и дракон над ней. */
+body.col-on[data-col-appearance="camelot"] #col-atrium { padding: 198px 44px 70px; }
+body.col-on[data-col-appearance="camelot"] .col-atr { max-width: 900px; }
+body.col-on[data-col-appearance="camelot"] .col-greet,
+body.col-on[data-col-appearance="camelot"] .col-me,
+body.col-on[data-col-appearance="camelot"] .col-rh,
+body.col-on[data-col-appearance="camelot"] .col-hcard { background-color: color-mix(in srgb, var(--col-card) 94%, transparent); border: 1px solid var(--col-gold); border-radius: 0; }
+body.col-on[data-col-appearance="camelot"] .col-greet { margin: 0; padding: 14px 24px 16px; box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb,var(--col-gold) 55%,transparent), 0 10px 24px -14px var(--col-shadow); }
+body.col-on[data-col-appearance="camelot"] #col-atrium .col-greet > .col-dragon { position: absolute; right: 60px; bottom: calc(100% + 27px); width: 200px; aspect-ratio: 1.2969; background: var(--col-gold); pointer-events: none; -webkit-mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; }
+body.col-on[data-col-appearance="camelot"] .col-greet h2 { font-size: 40px; }
+body.col-on[data-col-appearance="camelot"] .col-me { margin-top: 32px; padding: 26px 28px 20px; }
+body.col-on[data-col-appearance="camelot"] .col-me-main { justify-content: center; }
+body.col-on[data-col-appearance="camelot"] .col-recent { margin-top: 34px; }
+body.col-on[data-col-appearance="camelot"] .col-rh { padding: 8px 18px 0; }
+
+/* Стрельчатые арки с двойным золотым контуром. */
+body.col-on[data-col-appearance="camelot"] .col-frame,
+body.col-on[data-col-appearance="camelot"] .col-ava,
+body.col-on[data-col-appearance="camelot"] .col-pframe { border: 0; border-radius: 0; box-shadow: none; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] .col-pframe::before { content: ''; position: absolute; inset: 0; background: var(--col-gold); pointer-events: none; opacity: .95; -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
+body.col-on[data-col-appearance="camelot"] .col-pic,
+body.col-on[data-col-appearance="camelot"] .col-pimg { border: 0; border-radius: 0; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] .col-pframe::after { display: none; }
+
+/* Панель ввода — крепостная, с зубцами и двумя разными драконами из макета. */
+body.col-on[data-col-appearance="camelot"] #send_form { padding: 24px 62px 16px; border: 1px solid color-mix(in srgb,var(--col-gold) 55%,transparent); border-top: 0; background: color-mix(in srgb,var(--col-card) 80%,transparent); overflow: visible; }
+body.col-on[data-col-appearance="camelot"] #send_form::before { left: -1px; right: -1px; top: -15px; height: 16px; background: var(--col-gold); -webkit-mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / 52px 100% repeat-x; mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / 52px 100% repeat-x; filter: drop-shadow(0 -2px 3px var(--col-shadow)); }
+body.col-on[data-col-appearance="camelot"] #send_form::after { content: ''; position: absolute; left: -1px; right: -1px; top: -13px; height: 15px; background: linear-gradient(var(--col-st-hl),transparent) 0 0 / 100% 3px no-repeat,linear-gradient(180deg,var(--col-st-hi),var(--col-st-mid) 60%,var(--col-st-lo)); -webkit-mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / 52px 100% repeat-x; mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / 52px 100% repeat-x; pointer-events: none; }
+body.col-on[data-col-appearance="camelot"] #form_sheld { overflow: visible; }
+body.col-on[data-col-appearance="camelot"] .col-cdrag { position: fixed; aspect-ratio: .5547; background: var(--col-gold); filter: drop-shadow(0 3px 4px var(--col-shadow)); pointer-events: none; z-index: 2500; }
+body.col-on[data-col-appearance="camelot"] .col-cdrag-l { -webkit-mask: url('../assets/camelot/dragon-wall.png') center / 100% 100% no-repeat; mask: url('../assets/camelot/dragon-wall.png') center / 100% 100% no-repeat; }
+body.col-on[data-col-appearance="camelot"] .col-cdrag-r { -webkit-mask: url('../assets/camelot/dragon-wall-right.png') center / 100% 100% no-repeat; mask: url('../assets/camelot/dragon-wall-right.png') center / 100% 100% no-repeat; }
+body.col-on:not([data-col-appearance="camelot"]) .col-cdrag { display: none; }
+
+@media (max-width: 900px) {
+  body.col-on[data-col-appearance="camelot"] #col-atrium { padding-inline: 18px; }
+  body.col-on[data-col-appearance="camelot"] #col-atrium .col-greet > .col-dragon { width: 150px; right: 20px; }
+  body.col-on[data-col-appearance="camelot"] .col-cdrag { display: none; }
+}
+
+/* значки меню: обычные чуть крупнее, маска шута — картинкой того же визуального размера */
+body.col-on[data-col-appearance="camelot"] .col-nav > a > svg { width: 27px; height: 27px; margin: -2.5px; }
+body.col-on[data-col-appearance="camelot"] .col-nav a .col-navmask { width: 30px; height: 30px; flex: none; margin: -4px; opacity: .85; background: currentColor;
+  -webkit-mask: url('../assets/camelot/mask-jester-nav.png') center / contain no-repeat; mask: url('../assets/camelot/mask-jester-nav.png') center / contain no-repeat; }
+body.col-on[data-col-appearance="camelot"] .col-nav a:hover .col-navmask, body.col-on[data-col-appearance="camelot"] .col-nav a.on .col-navmask { opacity: 1; }
+body.col-on[data-col-appearance="camelot"] .col-nav [data-item="masks"] svg { width: 27px; height: 27px; margin: -2.5px; }
+/* заголовки: обычное начертание (у Alegreya SC нет «жирного» для заголовков в макете) */
+body.col-on[data-col-appearance="camelot"] :is(.col-greet h2, .col-me h3, .col-rh h3, .col-hcard h4, .col-win h2, .col-wb h3, .col-wb h4, .col-vtabs, .col-lib h3) { font-weight: 400; }
+body.col-on[data-col-appearance="camelot"] .col-nav a svg[hidden] { display: none; }
+
+/* кнопка меню чата: свиток с полосками, золотой, без квадрата (как в макете) */
+body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn { border: 0; background: none; box-shadow: none; color: var(--col-gold); width: 40px; height: 40px; }
+body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn:hover { color: var(--col-gold2); background: none; border: 0; }
+body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn::before { inset: 5px;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2H8a2 2 0 0 1-2-2V4zM6 4a2 2 0 0 0-2 2v2h2M10 9h6M10 13h6M10 17h3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2H8a2 2 0 0 1-2-2V4zM6 4a2 2 0 0 0-2 2v2h2M10 9h6M10 13h6M10 17h3.5'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+/* верх панели ввода: золотая полоска с чёрточками (как в последнем макете), без каменных зубцов */
+body.col-on[data-col-appearance="camelot"] #send_form::before { left: 0; right: 0; top: 0; height: 14px; filter: none; -webkit-mask: none; mask: none;
+  background:
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--col-gold) 70%, transparent) 0 5px, transparent 5px 9px) 0 5px / 100% 5px no-repeat,
+    linear-gradient(color-mix(in srgb, var(--col-gold) 60%, transparent), color-mix(in srgb, var(--col-gold) 60%, transparent)) 0 2px / 100% 1px no-repeat,
+    linear-gradient(color-mix(in srgb, var(--col-gold) 60%, transparent), color-mix(in srgb, var(--col-gold) 60%, transparent)) 0 12px / 100% 1px no-repeat; }
+body.col-on[data-col-appearance="camelot"] #send_form::after { display: none; }
+
+/* ═════ Зубцы: один стиль у всех окон и у главной. Число зубцов --cn считает crenel.js, края всегда целые и симметричные ═════ */
+body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-greet, .col-pm-docked)::before, body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-greet, .col-pm-docked)::after { content: ''; position: absolute; left: -1px; right: -1px; clip-path: none; pointer-events: none; display: block; }
+body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-greet, .col-pm-docked)::before { top: -28px; height: 28px; background: var(--col-gold); -webkit-mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / calc((100% - 34px) / (var(--cn, 17) - 1)) 100% repeat-x; mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / calc((100% - 34px) / (var(--cn, 17) - 1)) 100% repeat-x; filter: drop-shadow(0 -2px 3px var(--col-shadow)); }
+body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-greet, .col-pm-docked)::after { top: -26px; height: 28px; background: linear-gradient(var(--col-st-hl), transparent) 0 0 / 100% 3px no-repeat, linear-gradient(var(--col-st-ln), var(--col-st-ln)) 0 13px / 100% 1px no-repeat, linear-gradient(90deg, transparent 0 16.5px, var(--col-st-ln) 16.5px 17.5px, transparent 17.5px) 0 0 / calc((100% - 34px) / (var(--cn, 17) - 1)) 13px repeat-x, linear-gradient(90deg, transparent 0 8.5px, var(--col-st-ln) 8.5px 9.5px, transparent 9.5px 25.5px, var(--col-st-ln) 25.5px 26.5px, transparent 26.5px) 0 14px / calc((100% - 34px) / (var(--cn, 17) - 1)) 12px repeat-x, linear-gradient(180deg, var(--col-st-hi), var(--col-st-mid) 60%, var(--col-st-lo)); -webkit-mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / calc((100% - 34px) / (var(--cn, 17) - 1)) 100% repeat-x; mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / calc((100% - 34px) / (var(--cn, 17) - 1)) 100% repeat-x; }
+/* разделитель: лилия вместо ромбика (как в макете) */
+body.col-on[data-col-appearance="camelot"] .col-rule i { width: 15px; height: 17px; border: 0; transform: none; background: currentColor; clip-path: none; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 8C60 22 61 38 50 54C39 38 40 22 50 8ZM45 56C31 47 14 46 11 31C26 26 41 36 47 52ZM55 56C69 47 86 46 89 31C74 26 59 36 53 52ZM35 58H65V65H35ZM50 66C44 74 44 82 50 92C56 82 56 74 50 66ZM44 66C33 65 26 73 32 82C37 78 40 74 44 71ZM56 66C67 65 74 73 68 82C63 78 60 74 56 71Z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 8C60 22 61 38 50 54C39 38 40 22 50 8ZM45 56C31 47 14 46 11 31C26 26 41 36 47 52ZM55 56C69 47 86 46 89 31C74 26 59 36 53 52ZM35 58H65V65H35ZM50 66C44 74 44 82 50 92C56 82 56 74 50 66ZM44 66C33 65 26 73 32 82C37 78 40 74 44 71ZM56 66C67 65 74 73 68 82C63 78 60 74 56 71Z'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+/* ═════ Стрельчатые арки везде: один контур и одна двойная золотая рамка (как в макете) ═════ */
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, #col-persona .col-pimg) { position: relative; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; overflow: hidden; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, #col-persona .col-pimg)::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: .95; background: var(--col-gold); -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-me-pic, .col-card-pic) :is(.col-pic, img) { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+body.col-on[data-col-appearance="camelot"] .col-ch-editor .avatar img, body.col-on[data-col-appearance="camelot"] .col-ch-editor #avatar_div img { border: 0; border-radius: 0; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] .col-pframe::after { display: none; }
+
+/* аватар в чате: арка и рамка те же; печать-ромб остаётся, постамент переехал на обёртку */
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar { width: calc(var(--col-portrait-w) + 12px); padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; clip-path: none; }
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar img { width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; object-fit: cover; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar::before { content: ''; position: absolute; inset: 0; left: 0; right: 0; bottom: 0; height: auto; z-index: 3; pointer-events: none; border: 0; border-radius: 0; box-shadow: none; background: var(--col-gold); -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
+body.col-on[data-col-appearance="camelot"] #chat .mes[is_user="true"] .avatar::before { background: var(--col-accent); }
+/* печать-ромб в арке: по центру на постаменте, а не на боковой кромке поверх кольца и фото */
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar::after,
+body.col-on[data-col-appearance="camelot"] #chat .mes[is_user="true"] .avatar::after { left: 50%; right: auto; bottom: -18px; transform: translateX(-50%); z-index: 4; }
+body.col-on[data-col-appearance="camelot"] #chat .mes .mesAvatarWrapper::after { content: ''; position: absolute; left: 50%; top: calc(var(--col-portrait-h) + 14px); width: calc(var(--col-portrait-w) + 36px); height: 10px; transform: translateX(-50%); pointer-events: none;
+  border: 1px solid var(--col-st-ln); border-radius: 1px; background: linear-gradient(var(--col-st-hi), var(--col-st-lo)); box-shadow: 0 5px 7px -4px var(--col-shadow); }
+body.col-on[data-col-appearance="camelot"] :is(.col-brand h1, .col-greet h2, .col-me-txt h3, .col-rh h3, .col-wh h2, .col-wb h3, .col-wb h4, .col-gl) { text-shadow: none; -webkit-font-smoothing: auto; }
+
+/* зубцы у всех окон одинаковы: сброс остатков свитка Колизея (скругление, тень, отступы, рамка) на псевдоэлементах */
+body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-win-pop, .col-win-lib, .col-win-home, .col-greet, .col-pm-docked)::before,
+body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-win-pop, .col-win-lib, .col-win-home, .col-greet, .col-pm-docked)::after { border: 0; border-radius: 0; box-shadow: none; margin: 0; padding: 0; outline: 0; transform: none; }
+
+/* пристыкованный редактор промптов: зубцы сверху, как у окон; сам блок без обрезки, внутри прокрутка */
+body.col-on[data-col-appearance="camelot"] #completion_prompt_manager_popup.col-pm-docked { overflow: visible; }
+
+/* фото в арке: двойная золотая рамка, фото вплотную к внутренней линии (без пустого зазора), одинаково во всех рамках.
+   Положение фото задано процентами от самой рамки (у padding проценты считались бы от ширины окна). */
+html body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, .col-pframe) { padding: 0 !important; background: var(--col-card); }
+html body.col-on[data-col-appearance="camelot"] :is(.col-me-pic, .col-card-pic, .col-ava) > img,
+html body.col-on[data-col-appearance="camelot"] .col-frame > .col-pic,
+html body.col-on[data-col-appearance="camelot"] .col-pframe > .col-pimg { position: absolute !important; left: 6%; top: 4.5%; width: 88% !important; height: 91% !important; inset-inline-end: auto; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
+html body.col-on[data-col-appearance="camelot"] #chat .mes .avatar { background: transparent; }
+html body.col-on[data-col-appearance="camelot"] #chat .mes .avatar img { position: absolute; left: 6%; top: 4.5%; width: 88%; height: 91%; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
+html body.col-on[data-col-appearance="camelot"] #col-persona .col-pimg { padding: 0 !important; }
+
+/* у Камелота своя кнопка-свиток (рисунок на ::before), крупный свиток Колизея у него не показывается */
+
+/* кнопка меню чата в Камелоте: тот же крупный детальный свиток, что и в Колизее (цвета из палитры Камелота), прежний значок на ::before скрыт */
+body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn { width: 76px; height: 76px; overflow: visible; }
+body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn::before { display: none; }
+body.col-on[data-col-appearance="camelot"] .col-scrollbox { display: grid; place-items: center; width: 100%; height: 100%; font-size: 0; pointer-events: none; transition: transform .2s, filter .2s; }
+
+/* пристыкованный редактор промптов в Камелоте: рамка и фон как у окон-крепостей (роль хозяина не должна снять золотую рамку) */
+html body.col-on[data-col-appearance="camelot"] #completion_prompt_manager_popup.col-pm-docked {
+  overflow: visible; background: var(--col-card); border: 1px solid var(--col-gold); border-radius: 0;
+  box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb, var(--col-gold) 55%, transparent), 0 24px 50px -18px var(--col-shadow);
+}

@@ -1,0 +1,14 @@
+{
+  "display_name": "Колизей и Камелот",
+  "loading_order": 5,
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Азазель",
+  "version": "0.1.0",
+  "minimum_client_version": "1.19.0",
+  "auto_update": true,
+  "homePage": "https://github.com/mercazazel-sudo/SillyTavern-Coliseum",
+  "hooks": {
+    "activate": "init"
+  }
+}
