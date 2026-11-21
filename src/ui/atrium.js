@@ -17,7 +17,7 @@ const escapeHtml = text => String(text ?? '').replace(/[&<>"']/g, ch => ({ '&': 
 const greeting = hour => (hour >= 5 && hour < 12 ? 'Доброе утро' : hour >= 12 && hour < 18 ? 'Добрый день' : hour >= 18 && hour < 23 ? 'Добрый вечер' : 'Доброй ночи');
 
 /** Короткая дата: «сегодня», «вчера», «3 дня назад» и так далее. */
-function ago(timestamp) {
+export function ago(timestamp) {
   const when = typeof timestamp === 'number' ? timestamp : Date.parse(timestamp);
   const days = Math.floor((Date.now() - when) / 864e5);
   if (!Number.isFinite(days) || days < 0) return '';
@@ -29,7 +29,7 @@ function ago(timestamp) {
 }
 
 /** Обрезает превью последнего сообщения: без разметки, по слову. */
-function preview(text, limit = 220) {
+export function preview(text, limit = 220) {
   const plain = String(text ?? '').replace(/<[^>]*>/g, ' ').replace(/[*_`~#>]+/g, '').replace(/\s+/g, ' ').trim();
   if (plain.length <= limit) return plain;
   const cut = plain.slice(0, limit);
@@ -92,7 +92,8 @@ export function startAtrium(doc, { shared }) {
           <h4>${escapeHtml(ch.name)}</h4>
           <div class="col-by">${escapeHtml(ago(chat.last_mes))} · ${escapeHtml(chat.chat_items)} сообщ.</div>
           <p class="col-pq">${escapeHtml(preview(chat.mes, 90))}</p>${dots}
-          <button type="button" class="menu_button col-go" data-go="${i}">Открыть чат</button></article>`;
+          <button type="button" class="menu_button col-go" data-go="${i}">Открыть чат</button>
+          <button type="button" class="col-arch-btn" data-arch="${i}" title="Завершённая игра: убрать этот чат в архив (остальные чаты персонажа останутся)" aria-label="Убрать чат в архив"><i class="fa-solid fa-box-archive"></i></button></article>`;
       }).join('')}</div>`
       : `<p class="col-empty">${escapeHtml(state.loaded ? (state.error || `Чатов пока нет. Откройте персонажа в разделе «${(shared.appearance?.current?.().labels?.chars ?? 'Пантеон')}», и первая беседа появится здесь.`) : 'Загружаю чаты…')}</p>`;
 
@@ -105,7 +106,7 @@ export function startAtrium(doc, { shared }) {
           <p class="col-ttl">${escapeHtml(me?.title || 'без титула')}</p><button type="button" class="menu_button" data-open="masks">Все маски</button></div></div>
         ${others.length ? `<div class="col-sw"><span class="col-gl">Сменить</span>${others.map((p, i) => `<button type="button" class="col-swb" data-persona="${i}" title="${escapeHtml(p.name)}"><i style="background-image:url('${thumb(p.id).replace(/'/g, '%27')}')"></i><span>${escapeHtml(p.name)}</span></button>`).join('')}</div>` : ''}
       </section>
-      <section class="col-recent"><div class="col-rh"><h3>Галерея</h3><a href="#" data-temp title="Чат с ассистентом, который не сохраняется в файл">Временный чат</a><a href="#" data-open="chars">Все персонажи →</a></div>${chatsHtml}</section></div>`;
+      <section class="col-recent"><div class="col-rh"><h3>Галерея</h3><a href="#" data-temp title="Чат с ассистентом, который не сохраняется в файл">Временный чат</a><a href="#" data-open="archive" title="Завершённые игры: чаты, убранные с главной">Архив${shared.archive?.count?.() ? ` · ${shared.archive.count()}` : ''}</a><a href="#" data-open="chars">Все персонажи →</a></div>${chatsHtml}</section></div>`;
     root._others = others;
   };
 
@@ -128,6 +129,7 @@ export function startAtrium(doc, { shared }) {
       const byChar = new Map();
       for (const c of (Array.isArray(list) ? list : [])) {
         if (!c.avatar || !c.file_name || !(Number(c.chat_items) > 0) || !names.has(c.avatar)) continue;
+        if (shared.archive?.has(c.avatar, c.file_name)) continue;   // этот чат в архиве; другие чаты персонажа остаются
         if (!byChar.has(c.avatar)) byChar.set(c.avatar, { avatar: c.avatar, name: names.get(c.avatar), cur: 0, chats: [] });
         const entry = byChar.get(c.avatar);
         if (entry.chats.length < MAX_DOTS) entry.chats.push({ ...c, char_name: entry.name });
@@ -176,6 +178,15 @@ export function startAtrium(doc, { shared }) {
       if (state.chars[i]?.chats[j]) { state.chars[i].cur = j; render(); }
       return;
     }
+    const arch = event.target.closest('[data-arch]');
+    if (arch) {
+      const ch = state.chars[Number(arch.dataset.arch)], chat = ch?.chats[ch.cur];
+      if (chat && shared.archive?.add({ avatar: chat.avatar, name: ch.name, file: chat.file_name, items: chat.chat_items, last: chat.last_mes, mes: chat.mes })) {
+        globalThis.toastr?.success?.(`Чат «${ch.name}» убран в архив.`, 'Архив');
+        loadChats();
+      }
+      return;
+    }
     const go = event.target.closest('[data-go]');
     if (go) { const ch = state.chars[Number(go.dataset.go)]; if (ch) openChat(ch.chats[ch.cur]); return; }
     const card = event.target.closest('.col-hcard');
@@ -221,6 +232,9 @@ export function startAtrium(doc, { shared }) {
   const onAppearance = () => render();
   shared.bus?.addEventListener('appearance', onAppearance);
   undo.push(() => shared.bus?.removeEventListener('appearance', onAppearance));
+  const onArchive = () => { if (body.classList.contains(HOME_CLASS)) loadChats(); };
+  shared.bus?.addEventListener('archive', onArchive);
+  undo.push(() => shared.bus?.removeEventListener('archive', onArchive));
   undo.push(() => { delete shared.atrium; });
 
   render();

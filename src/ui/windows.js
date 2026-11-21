@@ -51,6 +51,7 @@ export const SECTIONS = [
   { id: 'chatlore', title: 'Лорбуки чата', role: 'pop', w: 760, h: 620, custom: true },
   { id: 'trace', title: 'Что сработало из лорбуков', role: 'pop', w: 860, h: 700, custom: true },
   { id: 'wiset', title: 'Настройки активации лорбуков', role: 'pop', w: 820, h: 640, content: 'wiActivationSettings' },
+  { id: 'archive', title: 'Архив · чаты', role: 'lib', w: 1100, h: 700, custom: true },
   { id: 'hand', title: 'Под рукой', role: 'pop', w: 760, h: 700, custom: true },
   { id: 'ext', title: 'Мастерская · расширения', role: 'lib', w: 1120, h: 700, drawer: 'extensions-settings-button', custom: true },
 ];

@@ -1054,6 +1054,18 @@ body.col-on #options #extensionsMenu.col-menu-ext:not(:has(div[id]:not(.extensio
 .col-dot:hover { transform: scale(1.25); background: color-mix(in srgb, var(--col-gold) 45%, transparent); }
 .col-dot.on { background: var(--col-gold); box-shadow: 0 0 0 2px var(--col-card), 0 0 0 3px color-mix(in srgb, var(--col-gold) 60%, transparent); }
 .col-hcard .col-go { width: 100%; margin: 0; }
+/* Архив чатов: кнопка в углу карточки Галереи и окно «Архив» */
+.col-hcard { position: relative; }
+.col-arch-btn { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; padding: 0; display: grid; place-items: center; border: 1px solid var(--col-gold); background: var(--col-card); color: var(--col-ink2); cursor: pointer; opacity: .55; transition: opacity .15s, background .15s; }
+.col-hcard:hover .col-arch-btn, .col-arch-btn:focus-visible { opacity: 1; }
+.col-arch-btn:hover { background: color-mix(in srgb, var(--col-gold) 30%, var(--col-card)); }
+.col-arch { padding: 4px 6px 12px; }
+.col-arch-note { margin: 0 0 16px; }
+.col-arch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 24px 20px; justify-items: center; }
+.col-arch-grid .col-hcard { width: 214px; cursor: default; }
+.col-arch-btns { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.col-arch-btns .menu_button { width: 100%; margin: 0; box-sizing: border-box; }
+.col-arch-empty { margin: 40px auto; max-width: 520px; text-align: center; font-style: italic; color: var(--col-faint); line-height: 1.5; }
 .col-msave { align-items: center; gap: 14px; }
 .col-msave .col-note { margin: 0; }
 .col-msave .col-dirty { color: var(--col-gold2); }

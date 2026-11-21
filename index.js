@@ -8,6 +8,7 @@ import { startSettingsPanel } from './src/ui/settings-panel.js';
 import { startSidebar } from './src/ui/sidebar.js';
 import { startWindows } from './src/ui/windows.js';
 import { startAtrium } from './src/ui/atrium.js';
+import { startArchive, startArchiveItem } from './src/ui/archive.js';
 import { startInputBar } from './src/ui/inputbar.js';
 import { startChatMenu } from './src/ui/chatmenu.js';
 import { startRegenNote } from './src/ui/regen-note.js';
@@ -30,6 +31,7 @@ const MODULES = [
   { name: 'тема', start: deps => startTheme(document, deps) },
   { name: 'фон', start: deps => startWall(document, deps) },
   { name: 'окна', start: deps => startWindows(document, deps) },
+  { name: 'архив', start: deps => startArchive(document, deps) },
   { name: 'атриум', start: deps => startAtrium(document, deps) },
   { name: 'мастерская', start: deps => startExtensionsLib(document, deps) },
   { name: 'александрия', start: deps => startLoreLib(document, deps) },
@@ -41,6 +43,7 @@ const MODULES = [
   { name: 'перегенерация с правкой', start: deps => startRegenNote(document, deps) },
   { name: 'закрепление маски за чатом', start: () => startLockPersona(document) },
   { name: 'проверка соединения', start: () => startCheckApi(document) },
+  { name: 'убрать чат в архив', start: deps => startArchiveItem(document, deps) },
   { name: 'колонна', start: deps => startSidebar(document, deps) },
   { name: 'разбор лорбуков', start: deps => startLoreTrace(document, deps) },
   { name: 'под рукой', start: deps => startHand(document, deps) },
