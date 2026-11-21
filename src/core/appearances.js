@@ -1,4 +1,4 @@
-import { PALETTES } from './palettes.js';
+import { PALETTES, CLEAR_PALETTE, CLEAR2_PALETTE } from './palettes.js';
 
 const camelotPalette = (id, title, dark, tokens, mosaic) => ({ id, title, dark, tokens, mosaic });
 
@@ -33,6 +33,8 @@ export const CAMELOT_PALETTES = Object.freeze([
     narr: '#d4aeb0', speech: '#a9c394', think: '#a9b4d8', 'fl-d': 'rgba(0,0,0,.42)', 'fl-l': 'rgba(255,255,255,.05)', cyl: 'rgba(0,0,0,.48)',
     'vein-op': '0', cap: '#1e2225', 'st-hi': '#2e3438', 'st-mid': '#212629', 'st-lo': '#15181a', 'st-ln': 'rgba(0,0,0,.6)', 'st-hl': 'rgba(255,255,255,.09)',
   }, { roman: { G: '#25292d', L: '#0f1113', Y: '#1d2124', O: '#6a7680', R: '#4e6577', grout: '#0c0e0f', veil: .22 }, geo: { G: '#25292d', L: '#0f1113', Y: '#1d2124', O: '#6a7680', R: '#4e6577', grout: '#0c0e0f', veil: .22 } }),
+  CLEAR_PALETTE,
+  CLEAR2_PALETTE,
 ]);
 
 const commonLabels = { masks: 'Маски', hand: 'Под рукой', chatlore: 'Лорбуки чата', trace: 'Что сработало из лорбуков', wiset: 'Настройки активации лорбуков' };

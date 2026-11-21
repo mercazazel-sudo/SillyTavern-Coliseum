@@ -20,9 +20,9 @@ body.col-on[data-col-appearance="camelot"] .col-shaft {
 }
 body.col-on[data-col-appearance="camelot"] .col-shaft .col-bricks { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 body.col-on[data-col-appearance="camelot"] .col-brand { margin: 0 14px; padding: 16px 24px 4px; }
-body.col-on[data-col-appearance="camelot"] .col-brand h1 { font: 400 38px/1.1 var(--col-f-brand); letter-spacing: .06em; text-transform: uppercase; color: var(--col-ink); }
-body.col-on[data-col-appearance="camelot"] .col-nav a { font: italic 19.5px var(--col-f-text); }
-body.col-on[data-col-appearance="camelot"] .col-nav a span small { font-family: var(--col-f-head); font-size: 12.5px; }
+body.col-on[data-col-appearance="camelot"] .col-brand h1 { font: 400 calc(38px * var(--col-fs, 1))/1.1 var(--col-f-brand); letter-spacing: .06em; text-transform: uppercase; color: var(--col-ink); }
+body.col-on[data-col-appearance="camelot"] .col-nav a { font: italic calc(19.5px * var(--col-fs, 1)) var(--col-f-text); }
+body.col-on[data-col-appearance="camelot"] .col-nav a span small { font-family: var(--col-f-head); font-size: calc(12.5px * var(--col-fs, 1)); }
 body.col-on[data-col-appearance="camelot"] .col-nav [data-item="masks"] svg { width: 30px; height: 30px; margin: -4px; color: currentColor; }
 
 /* Окна-крепости: каменные стены, цельные зубцы и золотая кромка. */
@@ -44,7 +44,7 @@ body.col-on[data-col-appearance="camelot"] .col-rh,
 body.col-on[data-col-appearance="camelot"] .col-hcard { background-color: color-mix(in srgb, var(--col-card) 94%, transparent); border: 1px solid var(--col-gold); border-radius: 0; }
 body.col-on[data-col-appearance="camelot"] .col-greet { margin: 0; padding: 14px 24px 16px; box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb,var(--col-gold) 55%,transparent), 0 10px 24px -14px var(--col-shadow); }
 body.col-on[data-col-appearance="camelot"] #col-atrium .col-greet > .col-dragon { position: absolute; right: 60px; bottom: calc(100% + 27px); width: 200px; aspect-ratio: 1.2969; background: var(--col-gold); pointer-events: none; -webkit-mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; }
-body.col-on[data-col-appearance="camelot"] .col-greet h2 { font-size: 40px; }
+body.col-on[data-col-appearance="camelot"] .col-greet h2 { font-size: calc(40px * var(--col-fs, 1)); }
 body.col-on[data-col-appearance="camelot"] .col-me { margin-top: 32px; padding: 26px 28px 20px; }
 body.col-on[data-col-appearance="camelot"] .col-me-main { justify-content: center; }
 body.col-on[data-col-appearance="camelot"] .col-recent { margin-top: 34px; }

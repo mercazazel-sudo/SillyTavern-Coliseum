@@ -44,8 +44,15 @@ export function startSettingsPanel(doc, { settings, save, shared }) {
   const syncAppearance = () => {
     const profiles = Object.values(shared.appearance.profiles);
     appearancePane.innerHTML = `<h3>Темы</h3><p class="col-note">Тема меняет всё оформление. Палитра и фон запоминаются отдельно для каждой.</p>
-      <div class="col-appearance-cards">${profiles.map(profile => `<button type="button" class="col-appearance-card${profile.id === settings.appearance ? ' on' : ''}" data-appearance="${profile.id}"><i class="col-appearance-preview col-appearance-preview-${profile.id}">${THEME_PREVIEWS[profile.id] ?? ''}</i><b>${escapeHtml(profile.title)}</b><small>${escapeHtml(profile.description)}</small></button>`).join('')}</div>`;
+      <div class="col-appearance-cards">${profiles.map(profile => `<button type="button" class="col-appearance-card${profile.id === settings.appearance ? ' on' : ''}" data-appearance="${profile.id}"><i class="col-appearance-preview col-appearance-preview-${profile.id}">${THEME_PREVIEWS[profile.id] ?? ''}</i><b>${escapeHtml(profile.title)}</b><small>${escapeHtml(profile.description)}</small></button>`).join('')}</div>
+      <h4>Картинки</h4>
+      <label class="col-frow col-sharp"><input type="checkbox" data-sharp${settings.sharpImages ? ' checked' : ''}><span>Чёткие аватарки и фоны</span></label>
+      <p class="col-note">Таверна показывает аватарки, маски и фоны сжатыми копиями, из-за этого они бывают размытыми. Параметр подставляет оригиналы. Файлы не меняются, выключается так же, без перезагрузки. Страница с очень большим числом персонажей может грузиться дольше.</p>`;
   };
+  appearancePane.addEventListener('change', event => {
+    const box = event.target.closest('[data-sharp]');
+    if (box) shared.sharp?.set(box.checked);
+  });
   appearancePane.addEventListener('click', event => {
     const card = event.target.closest('[data-appearance]');
     if (!card) return;
@@ -121,6 +128,91 @@ export function startSettingsPanel(doc, { settings, save, shared }) {
     <div class="col-pcards" data-col="mine"></div>
     <h4>Оформление окон</h4>
     <div class="col-wscards">${WS_CARDS.map(c => `<button type="button" class="col-wscard" data-ws="${c.id}"><div class="col-msw">${c.preview}</div><b>${escapeHtml(c.title)}</b><small>${escapeHtml(c.hint)}</small></button>`).join('')}</div>`;
+
+  // ───────── режим «Для слабовидящих»: тумблер, при включении выбор «Тёмная» или «Светлая» и размер ─────────
+  const lvBox = doc.createElement('div');
+  lvBox.className = 'col-lvbox';
+  lvBox.innerHTML = `<h4>Режим для слабовидящих</h4>
+    <p class="col-note">Крупный текст, высокий контраст (основной текст не ниже 12:1), однотонный фон вместо мозаики, толстые рамки и яркий фокус. Выбранная палитра сохраняется и вернётся после выключения.</p>
+    <label class="col-frow col-sharp"><input type="checkbox" data-lv><span>Включить режим для слабовидящих</span></label>
+    <div data-lv-more hidden>
+      <div class="col-lvtones" role="radiogroup" aria-label="Палитра режима">
+        <button type="button" class="col-lvtone" data-lv-tone="dark" role="radio">Тёмная</button>
+        <button type="button" class="col-lvtone" data-lv-tone="light" role="radio">Светлая</button>
+      </div>
+      <div class="col-frow"><label>Размер</label><span class="col-ctrl"><input type="range" min="100" max="160" step="5" data-lv-scale><b data-lv-val></b></span></div>
+    </div>`;
+  palPane.append(lvBox);
+  const syncLv = () => {
+    const on = !!settings.lowVision;
+    lvBox.querySelector('[data-lv]').checked = on;
+    lvBox.querySelector('[data-lv-more]').hidden = !on;
+    lvBox.querySelectorAll('[data-lv-tone]').forEach(b => { const sel = b.dataset.lvTone === settings.lowVisionTone; b.classList.toggle('on', sel); b.setAttribute('aria-checked', String(sel)); });
+    lvBox.querySelector('[data-lv-scale]').value = settings.lowVisionScale;
+    lvBox.querySelector('[data-lv-val]').textContent = `${settings.lowVisionScale}%`;
+  };
+  lvBox.addEventListener('change', event => {
+    if (event.target.closest('[data-lv]')) { shared.lowVision?.set(event.target.checked); syncLv(); }
+  });
+  lvBox.addEventListener('click', event => {
+    const tone = event.target.closest('[data-lv-tone]');
+    if (tone) { shared.lowVision?.setTone(tone.dataset.lvTone); syncLv(); }
+  });
+  lvBox.addEventListener('input', event => {
+    const range = event.target.closest('[data-lv-scale]');
+    if (range) { shared.lowVision?.setScale(Number(range.value)); lvBox.querySelector('[data-lv-val]').textContent = `${settings.lowVisionScale}%`; }
+  });
+  undo.push(() => lvBox.remove());
+  syncLv();
+
+  // ───────── фильтр аватарок для цветовой слепоты: два тумблера (взаимоисключающие) и ползунок силы ─────────
+  const cvdBox = doc.createElement('div');
+  cvdBox.className = 'col-cvdbox';
+  cvdBox.innerHTML = `<h4>Фильтр аватарок</h4>
+    <p class="col-note">Для людей с цветовой слепотой: цвета, которые не различаются, сдвигаются в различимые. Картинки меняются только на экране, файлы остаются прежними. Включён может быть один режим.</p>
+    <label class="col-frow col-sharp"><input type="checkbox" data-cvd="rg"><span>Красно-зелёный: протан и дейтан (самый частый)</span></label>
+    <label class="col-frow col-sharp"><input type="checkbox" data-cvd="by"><span>Сине-жёлтый: тритан</span></label>
+    <div class="col-frow" data-row="cvdStrength"><label>Сила фильтра</label><span class="col-ctrl"><input type="range" min="0" max="100" data-cvd-strength><b data-cvd-val></b></span></div>`;
+  palPane.append(cvdBox);
+  const help = doc.createElement('details');
+  help.className = 'col-info';
+  help.innerHTML = `<summary>Справка: цветовая слепота и что для неё сделано</summary>
+    <div class="col-info-body">
+      <h5>Типы</h5>
+      <ul>
+        <li><b>Протанопия, протаномалия.</b> Не работают или ослаблены «красные» колбочки. Красный темнее обычного и путается с зелёным.</li>
+        <li><b>Дейтеранопия, дейтераномалия.</b> Не работают или ослаблены «зелёные» колбочки. Самый частый тип. Вместе с протаном даёт красно-зелёный дальтонизм.</li>
+        <li><b>Тританопия, тританомалия.</b> Не работают или ослаблены «синие» колбочки. Путаются синий с зелёным и жёлтый с розовым. Редкий тип.</li>
+        <li>Окончание «-опия» значит, что цветовой канал не работает совсем, «-омалия» что работает слабее. Людей с «-омалией» больше.</li>
+      </ul>
+      <h5>Что сделано</h5>
+      <ul>
+        <li><b>Палитра «Ясная · красно-зелёный»</b> для протана и дейтана: без пары красный и зелёный, акценты синие, оранжевые и жёлтые, повествование, речь и мысли различаются ещё и яркостью.</li>
+        <li><b>Палитра «Ясная · сине-жёлтый»</b> для тритана: смысл несут красный, зелёный и яркость, фон нейтрально-графитовый без синевы.</li>
+        <li><b>Фильтр аватарок</b> сдвигает цвета, которые не различаются, в различимые. Режим «красно-зелёный» работает по модели дейтеранопии и помогает и при протане. При «-омалии» ставьте силу поменьше.</li>
+        <li>Контраст текста у обеих палитр не ниже 6:1.</li>
+        <li><b>Режим для слабовидящих:</b> крупный текст (100–160%), тёмная или светлая палитра с контрастом основного текста не ниже 12:1, однотонный фон, толстые рамки, яркий фокус при управлении с клавиатуры.</li>      </ul>
+    </div>`;
+  palPane.append(help);
+  undo.push(() => help.remove());
+  const syncCvd = () => {
+    const mode = settings.cvdMode;
+    cvdBox.querySelectorAll('[data-cvd]').forEach(box => { box.checked = box.dataset.cvd === mode; });
+    const strength = Number.isFinite(settings.cvdStrength) ? settings.cvdStrength : 60;
+    cvdBox.querySelector('[data-cvd-strength]').value = strength;
+    cvdBox.querySelector('[data-cvd-val]').textContent = `${strength}%`;
+    cvdBox.querySelector('[data-row="cvdStrength"]').hidden = mode === 'off';
+  };
+  cvdBox.addEventListener('change', event => {
+    const box = event.target.closest('[data-cvd]');
+    if (box) { shared.cvd?.set(box.checked ? box.dataset.cvd : 'off'); syncCvd(); }
+  });
+  cvdBox.addEventListener('input', event => {
+    const range = event.target.closest('[data-cvd-strength]');
+    if (range) { shared.cvd?.set(undefined, Number(range.value)); cvdBox.querySelector('[data-cvd-val]').textContent = `${range.value}%`; }
+  });
+  undo.push(() => cvdBox.remove());
+  syncCvd();
 
   const mine = palPane.querySelector('[data-col="mine"]');
   const syncPal = () => {

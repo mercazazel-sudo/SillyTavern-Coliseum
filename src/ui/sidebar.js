@@ -130,7 +130,9 @@ export function startSidebar(doc, { settings, save, stopAll, shared }) {
     settings.sideOff = off;
     body.classList.toggle('col-side-off', off);
     // ширину задаём здесь же: от неё зависят и стрелка, и поле чата (инлайн-значение перебивает правило из css)
-    body.style.setProperty('--col-side-w', off ? '0px' : `${SIDE_WIDTH}px`);
+    // в режиме для слабовидящих колонна шире в той же доле, что и текст (--col-fs)
+    const scale = Number.parseFloat(body.style.getPropertyValue('--col-fs')) || 1;
+    body.style.setProperty('--col-side-w', off ? '0px' : `${Math.round(SIDE_WIDTH * scale)}px`);
     toggle.title = off ? 'Показать колонну' : 'Скрыть колонну';
     toggle.setAttribute('aria-label', toggle.title);
     toggle.innerHTML = off ? CHEVRON_RIGHT : CHEVRON_LEFT;
@@ -139,6 +141,9 @@ export function startSidebar(doc, { settings, save, stopAll, shared }) {
   };
   toggle.addEventListener('click', () => setOff(!settings.sideOff));
   setOff(!!settings.sideOff);
+  const onLowVision = () => setOff(!!settings.sideOff);
+  shared.bus?.addEventListener('lowvision', onLowVision);
+  undo.push(() => shared.bus?.removeEventListener('lowvision', onLowVision));
   undo.push(() => body.classList.remove('col-side-off'));
 
   undo.push(() => body.style.removeProperty('--col-side-w'));

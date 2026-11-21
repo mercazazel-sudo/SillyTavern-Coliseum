@@ -6,6 +6,85 @@
 /** Восемь цветов конструктора. */
 export const CUSTOM_KEYS = Object.freeze(['page', 'card', 'ink', 'gold', 'accent', 'narr', 'speech', 'think']);
 
+/**
+ * «Ясная»: палитра для людей с нарушением цветового восприятия (красно-зелёный тип, самый частый).
+ * Нигде нет пары красный/зелёный: акценты строятся на синем, оранжевом и жёлтом (цвета, различимые при дальтонизме).
+ * Повествование, речь и мысли отличаются ещё и яркостью, а «хорошо» и «внимание» это синий и оранжевый.
+ * Контраст текста к фону карточки не ниже 6:1 (повествование 13, речь 10, мысли 8.7, подписи 6.4).
+ * Общая для обоих оформлений: для Камелота та же палитра добавлена в CAMELOT_PALETTES.
+ */
+export const CLEAR_PALETTE = Object.freeze({
+  id: 'clear', title: 'Ясная · красно-зелёный', dark: true,
+  tokens: {
+    page: '#0f1419', card: '#18202a', side: '#0b1015', side2: '#131a22',
+    ink: '#f4f1e8', ink2: '#d3d8de', faint: '#98a3ad', line: '#3a4757',
+    gold: '#e6b84a', gold2: '#f5d076', accent: '#1f6fb8', 'accent-ink': '#ffffff',
+    tint: '#1f2b38', ok: '#56b4e9', warn: '#e69f00', shadow: 'rgba(0,0,0,.55)',
+    narr: '#f0e6cc', speech: '#ffc34d', think: '#7fc4f2',
+    'fl-d': 'rgba(0,0,0,.42)', 'fl-l': 'rgba(255,255,255,.05)', cyl: 'rgba(0,0,0,.48)',
+    'vein-op': '0', cap: '#18202a',
+    'st-hi': '#2a3644', 'st-mid': '#1c2530', 'st-lo': '#10161d', 'st-ln': 'rgba(0,0,0,.6)', 'st-hl': 'rgba(190,220,255,.12)',
+  },
+  mosaic: {
+    roman: { G: '#1b2531', L: '#0b1118', Y: '#151e28', O: '#8a6a22', R: '#2f6fa6', grout: '#0a0f14', veil: 0.22 },
+    geo: { G: '#1b2531', L: '#0b1118', Y: '#151e28', O: '#8a6a22', R: '#2f6fa6', grout: '#0a0f14', veil: 0.22 },
+  },
+});
+
+/**
+ * «Ясная 2»: палитра для людей, которые путают синий с зелёным и жёлтый с розовым (тританопия, редкий тип).
+ * Смысл несут красный и зелёный (эта ось при таком виде различается) и яркость; синего и жёлтого для различения нет,
+ * фон нейтрально-графитовый, без синевы. Контраст текста к карточке: повествование 13.5, мысли 10, речь 8.3, подписи 6.5.
+ */
+export const CLEAR2_PALETTE = Object.freeze({
+  id: 'clear2', title: 'Ясная · сине-жёлтый', dark: true,
+  tokens: {
+    page: '#141414', card: '#1f1f1f', side: '#0e0e0e', side2: '#181818',
+    ink: '#f2efe9', ink2: '#d0cdc6', faint: '#a6a29c', line: '#444240',
+    gold: '#d89a6a', gold2: '#ecb88c', accent: '#a82a34', 'accent-ink': '#ffffff',
+    tint: '#2a2523', ok: '#6fcf7f', warn: '#ff7a66', shadow: 'rgba(0,0,0,.55)',
+    narr: '#efe8dc', speech: '#ffa07a', think: '#8fdc9a',
+    'fl-d': 'rgba(0,0,0,.42)', 'fl-l': 'rgba(255,255,255,.05)', cyl: 'rgba(0,0,0,.48)',
+    'vein-op': '0', cap: '#1f1f1f',
+    'st-hi': '#30302f', 'st-mid': '#222221', 'st-lo': '#121212', 'st-ln': 'rgba(0,0,0,.6)', 'st-hl': 'rgba(255,235,220,.10)',
+  },
+  mosaic: {
+    roman: { G: '#232120', L: '#0e0d0d', Y: '#1a1918', O: '#8a5a3a', R: '#8a2a32', grout: '#0b0a0a', veil: 0.22 },
+    geo: { G: '#232120', L: '#0e0d0d', Y: '#1a1918', O: '#8a5a3a', R: '#8a2a32', grout: '#0b0a0a', veil: 0.22 },
+  },
+});
+
+/**
+ * Палитры режима «Для слабовидящих» (тёмная и светлая). Не входят в списки палитр: подставляются, пока режим включён,
+ * а выбранная пользователем палитра не затирается. Контраст основного текста к карточке не ниже 12:1, подписей не ниже 10:1,
+ * рамки заметные (не ниже 6:1). Золото и акцент строятся на одном ярком (тёмная) или тёмном (светлая) оттенке без красного и зелёного.
+ */
+const lvTokens = (t, extra) => ({
+  ...t, 'accent-ink': extra.accentInk, tint: extra.tint, shadow: extra.shadow,
+  'fl-d': extra.fld, 'fl-l': extra.fll, cyl: extra.cyl, 'vein-op': '0', cap: t.card,
+  'st-hi': extra.hi, 'st-mid': extra.mid, 'st-lo': extra.lo, 'st-ln': extra.ln, 'st-hl': extra.hl,
+});
+export const LV_DARK = Object.freeze({
+  id: 'lv-dark', title: 'Для слабовидящих · тёмная', dark: true,
+  tokens: lvTokens({
+    page: '#0a0a0a', card: '#161616', side: '#000000', side2: '#101010',
+    ink: '#ffffff', ink2: '#ececec', faint: '#cfcfcf', line: '#9a9a9a',
+    gold: '#ffd54a', gold2: '#ffe58a', accent: '#ffd54a', ok: '#7fd4ff', warn: '#ffb03a',
+    narr: '#ffffff', speech: '#ffe066', think: '#a0dcff',
+  }, { accentInk: '#000000', tint: '#262626', shadow: 'rgba(0,0,0,.7)', fld: 'rgba(0,0,0,.5)', fll: 'rgba(255,255,255,.06)', cyl: 'rgba(0,0,0,.55)', hi: '#2e2e2e', mid: '#1c1c1c', lo: '#0c0c0c', ln: 'rgba(0,0,0,.7)', hl: 'rgba(255,255,255,.14)' }),
+  mosaic: { roman: { G: '#101010', L: '#000000', Y: '#0a0a0a', O: '#3a3010', R: '#1c1c1c', grout: '#000000', veil: 0.5 }, geo: { G: '#101010', L: '#000000', Y: '#0a0a0a', O: '#3a3010', R: '#1c1c1c', grout: '#000000', veil: 0.5 } },
+});
+export const LV_LIGHT = Object.freeze({
+  id: 'lv-light', title: 'Для слабовидящих · светлая', dark: false,
+  tokens: lvTokens({
+    page: '#ffffff', card: '#f6f3ec', side: '#ece8de', side2: '#e0dbcd',
+    ink: '#000000', ink2: '#1c1c1c', faint: '#3b3b3b', line: '#4a4a4a',
+    gold: '#5a3600', gold2: '#3d2400', accent: '#0b3d91', ok: '#003a66', warn: '#662900',
+    narr: '#111111', speech: '#4a2400', think: '#082a5e',
+  }, { accentInk: '#ffffff', tint: '#e6e1d3', shadow: 'rgba(0,0,0,.25)', fld: 'rgba(0,0,0,.12)', fll: 'rgba(255,255,255,.6)', cyl: 'rgba(0,0,0,.14)', hi: '#f6f3ec', mid: '#e3ded0', lo: '#cfc9b8', ln: 'rgba(0,0,0,.5)', hl: 'rgba(255,255,255,.8)' }),
+  mosaic: { roman: { G: '#f1eee6', L: '#d6d0bf', Y: '#e8e4d8', O: '#d9c79a', R: '#d6d0bf', grout: '#ffffff', veil: 0.5 }, geo: { G: '#f1eee6', L: '#d6d0bf', Y: '#e8e4d8', O: '#d9c79a', R: '#d6d0bf', grout: '#ffffff', veil: 0.5 } },
+});
+
 export const PALETTES = Object.freeze([
   {
     id: 'marble', title: 'Паросский мрамор', dark: false,
@@ -75,6 +154,8 @@ export const PALETTES = Object.freeze([
       geo: { G: '#3a3c40', L: '#16171a', Y: '#3a3c40', O: '#6f6648', R: '#4f5b66', grout: '#101113', veil: 0.18 },
     },
   },
+  CLEAR_PALETTE,
+  CLEAR2_PALETTE,
 ]);
 
 /* ── цвет ── */

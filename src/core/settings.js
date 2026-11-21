@@ -22,6 +22,9 @@ const DEFAULTS = Object.freeze({
   custom: null,      // старая «Моя палитра» (переносится в список тем)
   themes: null,      // свои темы: [{ id, name, colors }]
   sideOff: false,    // колонна скрыта
+  lowVision: false, lowVisionTone: 'dark', lowVisionScale: 125, // режим для слабовидящих: тёмная или светлая палитра и размер 100..160%
+  cvdMode: 'off', cvdStrength: 60, // фильтр аватарок для цветовой слепоты: off, rg (красно-зелёный), by (сине-жёлтый) и сила 0..100
+  sharpImages: false, // чёткие аватарки и фоны: оригиналы вместо сжатых миниатюр
   ws: 'ctx',         // оформление окон: ctx (по умолчанию), portico, stone, scroll
   bgScale: 100, bgPx: 50, bgPy: 50, bgVeil: 40, bgCell: 8, // свой фон: масштаб, сдвиг, затемнение, размер тессеры
   bgName: '',        // имя файла своего фона

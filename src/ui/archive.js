@@ -11,6 +11,7 @@ import { ago, preview } from './atrium.js';
 import { esc } from './kit.js';
 
 export const ITEM_ID = 'col_option_archive_chat';
+export const DELETE_ID = 'col_option_delete_chat';
 const keyOf = (avatar, file) => `${avatar}|${String(file).replace(/\.jsonl$/, '')}`;
 const live = () => globalThis.SillyTavern?.getContext?.();
 
@@ -28,6 +29,34 @@ function createApi(settings, save, bus) {
     },
     remove(avatar, file) { const k = keyOf(avatar, file); if (!settings.chatArchive[k]) return false; delete settings.chatArchive[k]; save(); emit(); return true; },
     count: () => Object.keys(settings.chatArchive).length,
+    /** Удаляет файл чата целиком (не сообщения) после подтверждения. info: { avatar, name, file }. true, если чат удалён. */
+    async deleteChat(info, shared) {
+      const ctx = live();
+      const file = String(info?.file ?? '').replace(/\.jsonl$/, '');
+      const id = ctx?.characters?.findIndex(c => c.avatar === info?.avatar) ?? -1;
+      if (!file || id < 0) { globalThis.toastr?.error?.('Не нашёл персонажа этого чата.', 'Удаление чата'); return false; }
+      const answer = await ctx.callGenericPopup(
+        `<h3>Удалить чат целиком?</h3><p>Чат «${esc(info.name)}» (${esc(file)}) будет удалён вместе со всеми сообщениями. Вернуть его нельзя.</p>`,
+        ctx.POPUP_TYPE.CONFIRM, '', { okButton: 'Удалить чат', cancelButton: 'Отмена' });
+      if (answer !== ctx.POPUP_RESULT.AFFIRMATIVE) return false;
+      try {
+        // открытый чат сначала закрываем, чтобы он не пересохранился сам после удаления
+        if (ctx.characterId !== undefined && Number(ctx.characterId) === id && ctx.chatId === file) await shared?.atrium?.show();
+        const script = await import('/script.js');
+        await script.deleteCharacterChatByName(id, file);
+        const res = await fetch('/api/characters/chats', { method: 'POST', headers: ctx.getRequestHeaders(), body: JSON.stringify({ avatar_url: info.avatar }) });
+        const left = res.ok ? Object.values(await res.json()).filter(x => x && typeof x === 'object') : [];
+        if (res.ok && left.some(x => String(x.file_name).replace(/\.jsonl$/, '') === file)) throw new Error('файл чата остался на диске');
+      } catch (error) {
+        report('удалить чат', error);
+        globalThis.toastr?.error?.('Не удалось удалить чат. Подробности в консоли.', 'Удаление чата');
+        return false;
+      }
+      delete settings.chatArchive[keyOf(info.avatar, file)];
+      save(); emit();
+      globalThis.toastr?.success?.(`Чат «${info.name}» удалён.`, 'Удаление чата');
+      return true;
+    },
     /** Архивные чаты, сгруппированные по персонажам; внутри чаты по свежести, группы по самому свежему чату. */
     groups() {
       const by = new Map();
@@ -89,7 +118,7 @@ export function startArchive(doc, { settings, save, shared }) {
         <h4>${esc(g.name)}</h4>
         <div class="col-by">${esc(ago(chat.last))} · ${esc(chat.items)} сообщ.</div>
         <p class="col-pq">${esc(chat.mes)}</p>${dots}
-        <div class="col-arch-btns"><button type="button" class="menu_button col-go" data-open-chat="${i}">Открыть чат</button><button type="button" class="menu_button col-restore" data-restore="${i}" title="Вернуть этот чат в Галерею на главной">Вернуть</button></div></article>`;
+        <div class="col-arch-btns"><button type="button" class="menu_button col-go" data-open-chat="${i}">Открыть чат</button><button type="button" class="menu_button col-restore" data-restore="${i}" title="Вернуть этот чат в Галерею на главной">Вернуть</button><button type="button" class="menu_button col-del" data-del="${i}" title="Удалить файл этого чата целиком">Удалить чат</button></div></article>`;
     }).join('')}</div>`;
   };
   root.addEventListener('click', async event => {
@@ -99,6 +128,12 @@ export function startArchive(doc, { settings, save, shared }) {
     if (restore) {
       const g = groups[Number(restore.dataset.restore)], chat = g?.chats[g.cur];
       if (chat && api.remove(chat.avatar, chat.file)) globalThis.toastr?.success?.(`Чат «${g.name}» вернулся в Галерею.`, 'Архив');
+      return;
+    }
+    const del = event.target.closest('[data-del]');
+    if (del) {
+      const g = groups[Number(del.dataset.del)], chat = g?.chats[g.cur];
+      if (chat) await api.deleteChat({ avatar: chat.avatar, name: g.name, file: chat.file }, shared);
       return;
     }
     const open = event.target.closest('[data-open-chat]');
@@ -166,7 +201,22 @@ export function startArchiveItem(doc, { shared }) {
     try { await shared.atrium?.show(); } catch (error) { report('архив: переход на главную', error); }
   };
   item.addEventListener('click', onClick);
+
+  // «Удалить чат»: удаляет файл открытого чата целиком (не отдельные сообщения)
+  const del = doc.createElement('a');
+  del.id = DELETE_ID;
+  del.title = 'Удалить этот чат целиком, вместе со всеми сообщениями (с подтверждением)';
+  del.innerHTML = '<i class="fa-lg fa-solid fa-trash-can"></i><span>Удалить чат</span>';
+  item.after(del);
+  const onDelete = async event => {
+    event.preventDefault();
+    const c = current();
+    if (!c) { globalThis.toastr?.warning?.('Удаление работает с чатами одного персонажа. Откройте такой чат.', 'Удаление чата'); return; }
+    await shared.archive.deleteChat(c, shared);
+  };
+  del.addEventListener('click', onDelete);
   return () => {
+    del.removeEventListener('click', onDelete); del.remove();
     item.removeEventListener('click', onClick); button?.removeEventListener('click', onOpen);
     for (const [t, fn] of handlers) ctx0?.eventSource?.removeListener?.(t, fn);
     shared.bus?.removeEventListener('archive', paint); item.remove();

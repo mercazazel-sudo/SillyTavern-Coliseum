@@ -3,7 +3,7 @@
  * Всё, что делает Колизей, живёт под body.col-on, поэтому «выключить» значит снять класс и переменные.
  * Другие модули узнают о смене палитры через shared.bus (событие 'palette') и читают shared.theme.current().
  */
-import { cleanColors, deriveCustom, resolvePalette } from '../core/palettes.js';
+import { cleanColors, deriveCustom, resolvePalette, LV_DARK, LV_LIGHT } from '../core/palettes.js';
 import { APPEARANCE_PROFILES, appearanceProfile } from '../core/appearances.js';
 import { selectAppearance } from '../core/settings.js';
 
@@ -19,10 +19,14 @@ export function startTheme(doc, { settings, save, shared }) {
     applied = [];
   };
 
+  /** Режим «Для слабовидящих» подставляет свою палитру, выбранная пользователем при этом не меняется. */
+  const lowVision = () => (settings.lowVision ? (settings.lowVisionTone === 'light' ? LV_LIGHT : LV_DARK) : null);
+  const activePalette = () => (preview ? deriveCustom(preview) : lowVision() ?? resolvePalette(settings, appearanceProfile(settings.appearance).palettes));
+
   const apply = () => {
     clearTokens();
     const profile = appearanceProfile(settings.appearance);
-    const palette = preview ? deriveCustom(preview) : resolvePalette(settings, profile.palettes);
+    const palette = activePalette();
     for (const [name, value] of Object.entries(palette.tokens)) {
       const property = `--col-${name}`;
       body.style.setProperty(property, value);
@@ -36,7 +40,9 @@ export function startTheme(doc, { settings, save, shared }) {
 
   shared.theme = {
     get list() { return appearanceProfile(settings.appearance).palettes; },
-    current: () => (preview ? deriveCustom(preview) : resolvePalette(settings, appearanceProfile(settings.appearance).palettes)),
+    current: activePalette,
+    /** Заново применяет палитру (например, после включения режима для слабовидящих). */
+    refresh: apply,
     /** Включает встроенную палитру или 'custom'. */
     set(id) {
       const list = appearanceProfile(settings.appearance).palettes;

@@ -73,6 +73,7 @@ export function startAtrium(doc, { shared }) {
     return `<div class="col-frame"><div class="col-pic"${src ? ` style="background-image:url('${src.replace(/'/g, '%27')}')"` : ''}>${src ? '' : '<span>?</span>'}</div></div>`;
   };
 
+  let menuOpen = null;   // номер карточки с открытым меню «⋯»
   const render = () => {
     const ctx = live();
     const personas = personaList();
@@ -93,7 +94,8 @@ export function startAtrium(doc, { shared }) {
           <div class="col-by">${escapeHtml(ago(chat.last_mes))} · ${escapeHtml(chat.chat_items)} сообщ.</div>
           <p class="col-pq">${escapeHtml(preview(chat.mes, 90))}</p>${dots}
           <button type="button" class="menu_button col-go" data-go="${i}">Открыть чат</button>
-          <button type="button" class="col-arch-btn" data-arch="${i}" title="Завершённая игра: убрать этот чат в архив (остальные чаты персонажа останутся)" aria-label="Убрать чат в архив"><i class="fa-solid fa-box-archive"></i></button></article>`;
+          <button type="button" class="col-arch-btn" data-menu="${i}" title="Действия с чатом" aria-label="Действия с чатом" aria-haspopup="true" aria-expanded="${menuOpen === i}"><i class="fa-solid fa-ellipsis"></i></button>
+          ${menuOpen === i ? `<div class="col-cmenu" role="menu"><button type="button" role="menuitem" data-new="${i}" title="Начать с этим персонажем новый чат"><i class="fa-solid fa-plus"></i>Новый чат</button><button type="button" role="menuitem" data-arch="${i}" title="Завершённая игра: чат уйдёт с главной, остальные чаты персонажа останутся"><i class="fa-solid fa-box-archive"></i>Убрать в архив</button><button type="button" role="menuitem" data-del="${i}" title="Удалить файл чата целиком"><i class="fa-solid fa-trash-can"></i>Удалить чат</button></div>` : ''}</article>`;
       }).join('')}</div>`
       : `<p class="col-empty">${escapeHtml(state.loaded ? (state.error || `Чатов пока нет. Откройте персонажа в разделе «${(shared.appearance?.current?.().labels?.chars ?? 'Пантеон')}», и первая беседа появится здесь.`) : 'Загружаю чаты…')}</p>`;
 
@@ -160,6 +162,22 @@ export function startAtrium(doc, { shared }) {
     }
   };
 
+  /** Новый чат с персонажем карточки: открываем персонажа и вызываем родное «Начать новый чат». */
+  const newChat = async ch => {
+    const ctx = live();
+    if (!ch || !ctx) return;
+    try {
+      const id = ctx.characters.findIndex(c => c.avatar === ch.avatar);
+      if (id < 0) throw new Error(`персонаж ${ch.avatar} не найден`);
+      await ctx.selectCharacterById(id);
+      const script = await import('/script.js');
+      await script.doNewChat();
+    } catch (error) {
+      report('новый чат', error);
+      globalThis.toastr?.error?.('Не удалось начать новый чат. Подробности в консоли.', 'Колизей');
+    }
+  };
+
   root.addEventListener('click', event => {
     if (event.target.closest('[data-temp]')) { event.preventDefault(); startTemp(); return; }
     const open = event.target.closest('[data-open]');
@@ -178,8 +196,21 @@ export function startAtrium(doc, { shared }) {
       if (state.chars[i]?.chats[j]) { state.chars[i].cur = j; render(); }
       return;
     }
+    const menu = event.target.closest('[data-menu]');
+    if (menu) { const i = Number(menu.dataset.menu); menuOpen = menuOpen === i ? null : i; render(); return; }
+    if (menuOpen !== null && !event.target.closest('[data-del], [data-arch], [data-new]')) { menuOpen = null; render(); return; }
+    const fresh = event.target.closest('[data-new]');
+    if (fresh) { menuOpen = null; render(); newChat(state.chars[Number(fresh.dataset.new)]); return; }
+    const del = event.target.closest('[data-del]');
+    if (del) {
+      menuOpen = null; render();
+      const ch = state.chars[Number(del.dataset.del)], chat = ch?.chats[ch.cur];
+      if (chat) shared.archive?.deleteChat({ avatar: chat.avatar, name: ch.name, file: chat.file_name }, shared);
+      return;
+    }
     const arch = event.target.closest('[data-arch]');
     if (arch) {
+      menuOpen = null;
       const ch = state.chars[Number(arch.dataset.arch)], chat = ch?.chats[ch.cur];
       if (chat && shared.archive?.add({ avatar: chat.avatar, name: ch.name, file: chat.file_name, items: chat.chat_items, last: chat.last_mes, mes: chat.mes })) {
         globalThis.toastr?.success?.(`Чат «${ch.name}» убран в архив.`, 'Архив');
