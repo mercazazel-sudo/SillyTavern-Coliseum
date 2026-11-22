@@ -5,6 +5,7 @@
  * Стрелка-язычок на краю колонны прячет её; состояние хранится в настройках.
  */
 import { report } from '../core/guard.js';
+import { esc as escapeHtml } from './kit.js';
 
 export const SIDE_ID = 'col-side';
 export const TOGGLE_ID = 'col-side-toggle';
@@ -94,7 +95,6 @@ const DEFS = `<svg id="col-defs" width="0" height="0" style="position:absolute" 
 const CHEVRON_LEFT = '<svg viewBox="0 0 12 20" width="12" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 3 3 10l6 7"/></svg>';
 const CHEVRON_RIGHT = '<svg viewBox="0 0 12 20" width="12" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 3l6 7-6 7"/></svg>';
 
-const escapeHtml = text => String(text).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 
 export function startSidebar(doc, { settings, save, stopAll, shared }) {
   const view = doc.defaultView;

@@ -6,10 +6,11 @@
 import { CUSTOM_KEYS } from '../core/palettes.js';
 import { WINDOW_STYLES } from '../core/settings.js';
 import { report } from '../core/guard.js';
-import { ask } from './kit.js';
+import { ask, esc as escapeHtml } from './kit.js';
 import { THEME_PREVIEWS } from './theme-previews.js';
 
 const COLOR_TITLES = {
+  side: 'Колонна (боковая панель)',
   page: 'Фон страницы', card: 'Карточки и окна', ink: 'Текст', gold: 'Золото: рамки и линии',
   accent: 'Акцент: кнопки', narr: 'Повествование', speech: 'Речь', think: 'Мысли',
 };
@@ -27,7 +28,6 @@ const SLIDERS = [
   { key: 'bgVeil', label: 'Затемнение', min: 0, max: 90, unit: '%' },
 ];
 
-const escapeHtml = text => String(text).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 
 export function startSettingsPanel(doc, { settings, save, shared }) {
   if (!shared.hubTab) { report('панель настроек', new Error('нет окна Акрополя')); return () => {}; }
@@ -233,30 +233,43 @@ export function startSettingsPanel(doc, { settings, save, shared }) {
     closeEditor();
     const own = editId ? settings.themes.find(t => t.id === editId) : null;
     const colors = { ...(own ? own.colors : Object.fromEntries(CUSTOM_KEYS.map(k => [k, shared.theme.current().tokens[k]]))) };
+    // цвет колонны необязательный: пока он не задан, подбирается сам и в строке показывается подобранный
+    const sideOf = () => colors.side ?? shared.theme.derive({ ...colors, side: undefined }).tokens.side;
     const host = palPane.closest('.col-win') ?? palPane;
     const shade = doc.createElement('div');
     shade.className = 'col-ask col-te-shade';
     shade.innerHTML = `<div class="col-ask-box col-te" role="dialog" aria-label="${own ? 'Изменить тему' : 'Новая тема'}">
       <h4>${own ? 'Изменить тему' : 'Новая тема'}</h4>
       <label class="col-te-name"><span>Название</span><input class="col-input" type="text" maxlength="40" placeholder="например: Закат над Делосом" value="${escapeHtml(own?.name ?? '')}"></label>
-      <div class="col-te-grid">${CUSTOM_KEYS.map(key => `<label class="col-te-row"><input type="color" data-key="${key}" value="${colors[key]}"><span>${escapeHtml(COLOR_TITLES[key])}</span><input type="text" class="col-input col-te-hex" data-hex="${key}" value="${colors[key]}" maxlength="7" spellcheck="false"></label>`).join('')}</div>
+      <div class="col-te-grid">${CUSTOM_KEYS.map(key => `<label class="col-te-row"><input type="color" data-key="${key}" value="${colors[key]}"><span>${escapeHtml(COLOR_TITLES[key])}</span><input type="text" class="col-input col-te-hex" data-hex="${key}" value="${colors[key]}" maxlength="7" spellcheck="false"></label>`).join('')}
+        <label class="col-te-row"><input type="color" data-key="side" value="${sideOf()}"><span>${escapeHtml(COLOR_TITLES.side)}</span><input type="text" class="col-input col-te-hex" data-hex="side" value="${sideOf()}" maxlength="7" spellcheck="false"></label>
+        <div class="col-te-sideauto"><span data-side-state></span><button type="button" class="col-btn" data-te="sideauto">Подбирать автоматически</button></div></div>
       <p class="col-note">Остальные оттенки подбираются сами. Страница меняется сразу, сохранится только по кнопке.</p>
       <div class="col-ask-btns"><button type="button" class="col-btn col-primary" data-te="save">Сохранить</button><button type="button" class="col-btn" data-te="cancel">Отмена</button></div></div>`;
     host.append(shade);
     editor = shade;
     const nameInput = shade.querySelector('.col-te-name input');
     const push = () => { try { shared.theme.preview(colors); } catch (error) { report('предпросмотр темы', error); } };
+    /** Строка колонны: показывает заданный или подобранный цвет и подпись, задан он или подбирается сам. */
+    const syncSide = () => {
+      const value = sideOf();
+      shade.querySelector('[data-key="side"]').value = value;
+      shade.querySelector('[data-hex="side"]').value = value;
+      shade.querySelector('[data-side-state]').textContent = colors.side ? 'задан вручную' : 'подбирается сам';
+      shade.querySelector('[data-te="sideauto"]').hidden = !colors.side;
+    };
     shade.addEventListener('input', event => {
       const el = event.target;
       if (el.dataset?.key) {
         colors[el.dataset.key] = el.value;
         shade.querySelector(`[data-hex="${el.dataset.key}"]`).value = el.value;
-        push();
+        syncSide(); push();
       } else if (el.dataset?.hex) {
         const v = el.value.trim();
-        if (/^#[0-9a-f]{6}$/i.test(v)) { colors[el.dataset.hex] = v.toLowerCase(); shade.querySelector(`[data-key="${el.dataset.hex}"]`).value = v.toLowerCase(); push(); }
+        if (/^#[0-9a-f]{6}$/i.test(v)) { colors[el.dataset.hex] = v.toLowerCase(); shade.querySelector(`[data-key="${el.dataset.hex}"]`).value = v.toLowerCase(); syncSide(); push(); }
       }
     });
+    syncSide();
     const save1 = () => {
       const name = nameInput.value.trim();
       if (!name) { nameInput.focus(); nameInput.classList.add('col-bad'); return; }
@@ -269,6 +282,7 @@ export function startSettingsPanel(doc, { settings, save, shared }) {
       if (event.target === shade) return closeEditor();
       const act = event.target.closest('[data-te]')?.dataset.te;
       if (act === 'save') save1(); else if (act === 'cancel') closeEditor();
+      else if (act === 'sideauto') { delete colors.side; syncSide(); push(); }
     });
     shade.addEventListener('keydown', event => {
       if (event.key === 'Escape') { event.stopPropagation(); closeEditor(); }

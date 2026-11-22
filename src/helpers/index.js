@@ -9,8 +9,8 @@ import { prepare, migrateFromSputniki, clearAllHistories, currentSet, bindSetPro
 import { startErrorLog } from './attach.js';
 import { startUi, fillAvatar } from './ui.js';
 import { createEditor } from './editor.js';
+import { esc as escapeHtml } from '../ui/kit.js';
 
-const escapeHtml = text => String(text).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 
 export async function startHelpers(doc, { context, settings: root, save, shared }) {
   const undo = [];

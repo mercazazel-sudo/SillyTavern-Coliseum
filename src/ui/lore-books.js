@@ -4,8 +4,8 @@
  * Книга с ленточкой-закладкой включена глобально (по родному списку #world_info).
  */
 import { report } from '../core/guard.js';
+import { esc as escapeHtml } from './kit.js';
 
-const escapeHtml = text => String(text ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 const HUES = ['a', 'b', 'c'];
 
 export function startLoreBooks(doc) {

@@ -7,13 +7,13 @@
  * Окно «Архив» (карточки по персонажам, как Галерея), пункты меню чата «Отправить чат в архив» и «Вернуть чат из архива».
  */
 import { report } from '../core/guard.js';
-import { ago, preview } from './atrium.js';
-import { esc } from './kit.js';
+import { ago, preview, openChatByFile, characterIndex } from './chatutil.js';
+import { esc, stContext } from './kit.js';
 
 export const ITEM_ID = 'col_option_archive_chat';
 export const DELETE_ID = 'col_option_delete_chat';
 const keyOf = (avatar, file) => `${avatar}|${String(file).replace(/\.jsonl$/, '')}`;
-const live = () => globalThis.SillyTavern?.getContext?.();
+const live = stContext;
 
 /** Данные архива и их изменение. Возвращает объект, который кладётся в shared.archive. */
 function createApi(settings, save, bus) {
@@ -33,7 +33,8 @@ function createApi(settings, save, bus) {
     async deleteChat(info, shared) {
       const ctx = live();
       const file = String(info?.file ?? '').replace(/\.jsonl$/, '');
-      const id = ctx?.characters?.findIndex(c => c.avatar === info?.avatar) ?? -1;
+      let id = -1;
+      try { id = characterIndex(info?.avatar); } catch { /* ниже сообщим */ }
       if (!file || id < 0) { globalThis.toastr?.error?.('Не нашёл персонажа этого чата.', 'Удаление чата'); return false; }
       const answer = await ctx.callGenericPopup(
         `<h3>Удалить чат целиком?</h3><p>Чат «${esc(info.name)}» (${esc(file)}) будет удалён вместе со всеми сообщениями. Вернуть его нельзя.</p>`,
@@ -69,17 +70,6 @@ function createApi(settings, save, bus) {
       return [...by.values()].sort((a, b) => when(b.chats[0]) - when(a.chats[0]));
     },
   };
-}
-
-/** Открывает чат персонажа по аватару и имени файла (так же, как кнопка «Открыть чат» в Галерее). */
-export async function openChatByFile(avatar, file) {
-  const ctx = live();
-  if (!ctx) return;
-  const id = ctx.characters.findIndex(c => c.avatar === avatar);
-  if (id < 0) throw new Error(`персонаж ${avatar} не найден`);
-  await ctx.selectCharacterById(id);
-  const name = String(file).replace(/\.jsonl$/, '');
-  if (ctx.getCurrentChatId?.() !== name) await ctx.openCharacterChat(name);
 }
 
 /** Окно «Архив»: карточки по персонажам. */

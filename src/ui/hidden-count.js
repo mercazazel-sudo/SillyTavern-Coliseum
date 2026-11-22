@@ -6,6 +6,7 @@
  * Эта реализация своя; в проекте нет кода расширения Hidden Messages Counter (оно под GPL-2.0).
  */
 import { report } from '../core/guard.js';
+import { stContext } from './kit.js';
 
 export const ITEM_ID = 'col_option_hidden_count';
 
@@ -20,7 +21,7 @@ export function startHiddenCount(doc) {
   const view = doc.defaultView;
   const options = doc.getElementById('options');
   if (!options) { report('скрытые сообщения', new Error('нет меню чата')); return () => {}; }
-  const live = () => globalThis.SillyTavern?.getContext?.();
+  const live = stContext;
 
   const item = doc.createElement('a');
   item.id = ITEM_ID;

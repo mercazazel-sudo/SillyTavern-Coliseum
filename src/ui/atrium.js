@@ -4,6 +4,8 @@
  * Родное приветствие остаётся в странице, но скрыто, пока виден Атриум.
  */
 import { report } from '../core/guard.js';
+import { esc as escapeHtml, stContext } from './kit.js';
+import { ago, preview, openChatByFile, selectByAvatar } from './chatutil.js';
 
 export const ATRIUM_ID = 'col-atrium';
 const HOME_CLASS = 'col-home-on';
@@ -12,35 +14,14 @@ const MAX_DOTS = 6;   // чатов у одного персонажа (точк
 
 const MAXIMS = ['Познай самого себя.', 'Ничего сверх меры.', 'Торопись медленно.', 'Терпение горько, но плод его сладок.', 'Всё течёт.', 'Дорогу осилит идущий.'];
 
-const escapeHtml = text => String(text ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
 
 const greeting = hour => (hour >= 5 && hour < 12 ? 'Доброе утро' : hour >= 12 && hour < 18 ? 'Добрый день' : hour >= 18 && hour < 23 ? 'Добрый вечер' : 'Доброй ночи');
-
-/** Короткая дата: «сегодня», «вчера», «3 дня назад» и так далее. */
-export function ago(timestamp) {
-  const when = typeof timestamp === 'number' ? timestamp : Date.parse(timestamp);
-  const days = Math.floor((Date.now() - when) / 864e5);
-  if (!Number.isFinite(days) || days < 0) return '';
-  if (days === 0) return 'сегодня';
-  if (days === 1) return 'вчера';
-  const last = days % 10, tens = days % 100;
-  const word = last === 1 && tens !== 11 ? 'день' : last >= 2 && last <= 4 && (tens < 12 || tens > 14) ? 'дня' : 'дней';
-  return days < 60 ? `${days} ${word} назад` : `${Math.round(days / 30)} мес. назад`;
-}
-
-/** Обрезает превью последнего сообщения: без разметки, по слову. */
-export function preview(text, limit = 220) {
-  const plain = String(text ?? '').replace(/<[^>]*>/g, ' ').replace(/[*_`~#>]+/g, '').replace(/\s+/g, ' ').trim();
-  if (plain.length <= limit) return plain;
-  const cut = plain.slice(0, limit);
-  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), limit * 0.6))}…`;
-}
 
 export function startAtrium(doc, { shared }) {
   const view = doc.defaultView;
   const body = doc.body;
   const undo = [];
-  const live = () => globalThis.SillyTavern?.getContext?.();
+  const live = stContext;
 
   const root = doc.createElement('section');
   root.id = ATRIUM_ID;
@@ -148,15 +129,9 @@ export function startAtrium(doc, { shared }) {
   };
 
   const openChat = async chat => {
-    const ctx = live();
-    if (!chat || !ctx) return;
-    try {
-      const id = ctx.characters.findIndex(c => c.avatar === chat.avatar);
-      if (id < 0) throw new Error(`персонаж ${chat.avatar} не найден`);
-      await ctx.selectCharacterById(id);
-      const file = String(chat.file_name).replace(/\.jsonl$/, '');
-      if (ctx.getCurrentChatId?.() !== file) await ctx.openCharacterChat(file);
-    } catch (error) {
+    if (!chat) return;
+    try { await openChatByFile(chat.avatar, chat.file_name); }
+    catch (error) {
       report('открыть чат', error);
       globalThis.toastr?.error?.('Не удалось открыть чат. Подробности в консоли.', 'Колизей');
     }
@@ -167,9 +142,7 @@ export function startAtrium(doc, { shared }) {
     const ctx = live();
     if (!ch || !ctx) return;
     try {
-      const id = ctx.characters.findIndex(c => c.avatar === ch.avatar);
-      if (id < 0) throw new Error(`персонаж ${ch.avatar} не найден`);
-      await ctx.selectCharacterById(id);
+      await selectByAvatar(ch.avatar);
       const script = await import('/script.js');
       await script.doNewChat();
     } catch (error) {

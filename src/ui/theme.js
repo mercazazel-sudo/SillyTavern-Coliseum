@@ -19,6 +19,8 @@ export function startTheme(doc, { settings, save, shared }) {
     applied = [];
   };
 
+  /** Цвета конструктора из токенов палитры: цвет колонны не переносим, он остаётся автоматическим. */
+  const fromTokens = tokens => { const { side, ...rest } = tokens; return cleanColors(rest); };
   /** Режим «Для слабовидящих» подставляет свою палитру, выбранная пользователем при этом не меняется. */
   const lowVision = () => (settings.lowVision ? (settings.lowVisionTone === 'light' ? LV_LIGHT : LV_DARK) : null);
   const activePalette = () => (preview ? deriveCustom(preview) : lowVision() ?? resolvePalette(settings, appearanceProfile(settings.appearance).palettes));
@@ -46,7 +48,7 @@ export function startTheme(doc, { settings, save, shared }) {
     /** Включает встроенную палитру или 'custom'. */
     set(id) {
       const list = appearanceProfile(settings.appearance).palettes;
-      if (id === 'custom' && !settings.custom) settings.custom = { ...cleanColors(resolvePalette(settings, list).tokens) };
+      if (id === 'custom' && !settings.custom) settings.custom = { ...fromTokens(resolvePalette(settings, list).tokens) };
       const known = id === 'custom' || list.some(p => p.id === id) || settings.themes.some(t => t.id === id);
       settings.theme = known ? id : list[0].id;
       settings.appearancePrefs[settings.appearance].palette = settings.theme;
@@ -55,7 +57,7 @@ export function startTheme(doc, { settings, save, shared }) {
     },
     /** Меняет один цвет конструктора и включает свою палитру. */
     setCustomColor(key, value) {
-      settings.custom = cleanColors({ ...(settings.custom ?? cleanColors(resolvePalette(settings, appearanceProfile(settings.appearance).palettes).tokens)), [key]: value });
+      settings.custom = cleanColors({ ...(settings.custom ?? fromTokens(resolvePalette(settings, appearanceProfile(settings.appearance).palettes).tokens)), [key]: value });
       settings.theme = 'custom';
       save();
       apply();

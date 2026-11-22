@@ -169,6 +169,8 @@ const luminance = hex => { const [r, g, b] = rgb(hex); return (0.2126 * r + 0.71
 export function cleanColors(colors) {
   const result = {};
   for (const key of CUSTOM_KEYS) result[key] = HEX.test(colors?.[key] ?? '') ? colors[key] : '#888888';
+  // необязательный цвет колонны: если не задан, колонна подбирается сама из цвета страницы
+  if (HEX.test(colors?.side ?? '')) result.side = colors.side.toLowerCase();
   return result;
 }
 
@@ -176,8 +178,9 @@ export function cleanColors(colors) {
 export function deriveCustom(input) {
   const c = cleanColors(input);
   const dark = luminance(c.page) < 0.45;
-  const side = mix(c.page, c.ink, dark ? 0.12 : 0.06);
-  const side2 = mix(c.page, c.ink, dark ? 0.22 : 0.12);
+  // цвет колонны: заданный в конструкторе или подобранный; второй оттенок градиента выводится из него
+  const side = c.side ?? mix(c.page, c.ink, dark ? 0.12 : 0.06);
+  const side2 = c.side ? mix(c.side, dark ? '#ffffff' : '#000000', 0.10) : mix(c.page, c.ink, dark ? 0.22 : 0.12);
   const line = mix(c.page, c.ink, dark ? 0.26 : 0.20);
   const tokens = {
     page: c.page, card: c.card, side, side2, ink: c.ink,

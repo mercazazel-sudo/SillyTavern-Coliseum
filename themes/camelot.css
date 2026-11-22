@@ -41,7 +41,7 @@ body.col-on[data-col-appearance="camelot"] .col-atr { max-width: 900px; }
 body.col-on[data-col-appearance="camelot"] .col-greet,
 body.col-on[data-col-appearance="camelot"] .col-me,
 body.col-on[data-col-appearance="camelot"] .col-rh,
-body.col-on[data-col-appearance="camelot"] .col-hcard { background-color: color-mix(in srgb, var(--col-card) 94%, transparent); border: 1px solid var(--col-gold); border-radius: 0; }
+body.col-on[data-col-appearance="camelot"] .col-hcard { background-color: color-mix(in srgb, var(--col-card) var(--col-plate, 96%), transparent); border: 1px solid var(--col-gold); border-radius: 0; }
 body.col-on[data-col-appearance="camelot"] .col-greet { margin: 0; padding: 14px 24px 16px; box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb,var(--col-gold) 55%,transparent), 0 10px 24px -14px var(--col-shadow); }
 body.col-on[data-col-appearance="camelot"] #col-atrium .col-greet > .col-dragon { position: absolute; right: 60px; bottom: calc(100% + 27px); width: 200px; aspect-ratio: 1.2969; background: var(--col-gold); pointer-events: none; -webkit-mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; mask: url('../assets/camelot/dragon-mask.png') center / contain no-repeat; }
 body.col-on[data-col-appearance="camelot"] .col-greet h2 { font-size: calc(40px * var(--col-fs, 1)); }
@@ -51,16 +51,14 @@ body.col-on[data-col-appearance="camelot"] .col-recent { margin-top: 34px; }
 body.col-on[data-col-appearance="camelot"] .col-rh { padding: 8px 18px 0; }
 
 /* Стрельчатые арки с двойным золотым контуром. */
-body.col-on[data-col-appearance="camelot"] .col-frame,
-body.col-on[data-col-appearance="camelot"] .col-ava,
-body.col-on[data-col-appearance="camelot"] .col-pframe { border: 0; border-radius: 0; box-shadow: none; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] .col-frame, body.col-on[data-col-appearance="camelot"] .col-pframe { border: 0; border-radius: 0; box-shadow: none; clip-path: var(--col-arch); }
 body.col-on[data-col-appearance="camelot"] .col-pframe::before { content: ''; position: absolute; inset: 0; background: var(--col-gold); pointer-events: none; opacity: .95; -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
 body.col-on[data-col-appearance="camelot"] .col-pic,
 body.col-on[data-col-appearance="camelot"] .col-pimg { border: 0; border-radius: 0; clip-path: var(--col-arch); }
 body.col-on[data-col-appearance="camelot"] .col-pframe::after { display: none; }
 
 /* Панель ввода — крепостная, с зубцами и двумя разными драконами из макета. */
-body.col-on[data-col-appearance="camelot"] #send_form { padding: 24px 62px 16px; border: 1px solid color-mix(in srgb,var(--col-gold) 55%,transparent); border-top: 0; background: color-mix(in srgb,var(--col-card) 80%,transparent); overflow: visible; }
+body.col-on[data-col-appearance="camelot"] #send_form { padding: 24px 62px 16px; border: 1px solid color-mix(in srgb,var(--col-gold) 55%,transparent); border-top: 0; background: color-mix(in srgb,var(--col-card) var(--col-plate, 96%),transparent); overflow: visible; }
 body.col-on[data-col-appearance="camelot"] #send_form::before { left: -1px; right: -1px; top: -15px; height: 16px; background: var(--col-gold); -webkit-mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / 52px 100% repeat-x; mask: linear-gradient(90deg,#000 0 34px,transparent 34px) 0 0 / 52px 100% repeat-x; filter: drop-shadow(0 -2px 3px var(--col-shadow)); }
 body.col-on[data-col-appearance="camelot"] #send_form::after { content: ''; position: absolute; left: -1px; right: -1px; top: -13px; height: 15px; background: linear-gradient(var(--col-st-hl),transparent) 0 0 / 100% 3px no-repeat,linear-gradient(180deg,var(--col-st-hi),var(--col-st-mid) 60%,var(--col-st-lo)); -webkit-mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / 52px 100% repeat-x; mask: linear-gradient(90deg,transparent 0 2px,#000 2px 32px,transparent 32px) 0 0 / 52px 100% repeat-x; pointer-events: none; }
 body.col-on[data-col-appearance="camelot"] #form_sheld { overflow: visible; }
@@ -108,8 +106,8 @@ body.col-on[data-col-appearance="camelot"] :is(.col-win, .col-greet, .col-pm-doc
 body.col-on[data-col-appearance="camelot"] .col-rule i { width: 15px; height: 17px; border: 0; transform: none; background: currentColor; clip-path: none; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 8C60 22 61 38 50 54C39 38 40 22 50 8ZM45 56C31 47 14 46 11 31C26 26 41 36 47 52ZM55 56C69 47 86 46 89 31C74 26 59 36 53 52ZM35 58H65V65H35ZM50 66C44 74 44 82 50 92C56 82 56 74 50 66ZM44 66C33 65 26 73 32 82C37 78 40 74 44 71ZM56 66C67 65 74 73 68 82C63 78 60 74 56 71Z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 8C60 22 61 38 50 54C39 38 40 22 50 8ZM45 56C31 47 14 46 11 31C26 26 41 36 47 52ZM55 56C69 47 86 46 89 31C74 26 59 36 53 52ZM35 58H65V65H35ZM50 66C44 74 44 82 50 92C56 82 56 74 50 66ZM44 66C33 65 26 73 32 82C37 78 40 74 44 71ZM56 66C67 65 74 73 68 82C63 78 60 74 56 71Z'/%3E%3C/svg%3E") center / contain no-repeat; }
 
 /* ═════ Стрельчатые арки везде: один контур и одна двойная золотая рамка (как в макете) ═════ */
-body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, #col-persona .col-pimg) { position: relative; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; overflow: hidden; clip-path: var(--col-arch); }
-body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, #col-persona .col-pimg)::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: .95; background: var(--col-gold); -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-me-pic, .col-card-pic, #col-persona .col-pimg) { position: relative; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; overflow: hidden; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-me-pic, .col-card-pic, #col-persona .col-pimg)::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: .95; background: var(--col-gold); -webkit-mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; mask: var(--col-arch-ring) 0 0 / 100% 100% no-repeat; }
 body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-me-pic, .col-card-pic) :is(.col-pic, img) { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
 body.col-on[data-col-appearance="camelot"] .col-ch-editor .avatar img, body.col-on[data-col-appearance="camelot"] .col-ch-editor #avatar_div img { border: 0; border-radius: 0; clip-path: var(--col-arch); }
 body.col-on[data-col-appearance="camelot"] .col-pframe::after { display: none; }
@@ -135,13 +133,11 @@ body.col-on[data-col-appearance="camelot"] #completion_prompt_manager_popup.col-
 
 /* фото в арке: двойная золотая рамка, фото вплотную к внутренней линии (без пустого зазора), одинаково во всех рамках.
    Положение фото задано процентами от самой рамки (у padding проценты считались бы от ширины окна). */
-html body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-ava, .col-me-pic, .col-card-pic, .col-pframe) { padding: 0 !important; background: var(--col-card); }
-html body.col-on[data-col-appearance="camelot"] :is(.col-me-pic, .col-card-pic, .col-ava) > img,
-html body.col-on[data-col-appearance="camelot"] .col-frame > .col-pic,
-html body.col-on[data-col-appearance="camelot"] .col-pframe > .col-pimg { position: absolute !important; left: 6%; top: 4.5%; width: 88% !important; height: 91% !important; inset-inline-end: auto; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
-html body.col-on[data-col-appearance="camelot"] #chat .mes .avatar { background: transparent; }
-html body.col-on[data-col-appearance="camelot"] #chat .mes .avatar img { position: absolute; left: 6%; top: 4.5%; width: 88%; height: 91%; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
-html body.col-on[data-col-appearance="camelot"] #col-persona .col-pimg { padding: 0 !important; }
+body.col-on[data-col-appearance="camelot"] :is(.col-frame, .col-me-pic, .col-card-pic, .col-pframe) { padding: 0 !important; background: var(--col-card); }
+body.col-on[data-col-appearance="camelot"] :is(.col-me-pic, .col-card-pic) > img, body.col-on[data-col-appearance="camelot"] .col-frame > .col-pic, body.col-on[data-col-appearance="camelot"] .col-pframe > .col-pimg { position: absolute !important; left: 6%; top: 4.5%; width: 88% !important; height: 91% !important; inset-inline-end: auto; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar { background: transparent; }
+body.col-on[data-col-appearance="camelot"] #chat .mes .avatar img { position: absolute; left: 6%; top: 4.5%; width: 88%; height: 91%; object-fit: cover; object-position: center top; clip-path: var(--col-arch); }
+body.col-on[data-col-appearance="camelot"] #col-persona .col-pimg { padding: 0 !important; }
 
 /* у Камелота своя кнопка-свиток (рисунок на ::before), крупный свиток Колизея у него не показывается */
 
@@ -151,7 +147,7 @@ body.col-on[data-col-appearance="camelot"] #options_button.col-menubtn::before {
 body.col-on[data-col-appearance="camelot"] .col-scrollbox { display: grid; place-items: center; width: 100%; height: 100%; font-size: 0; pointer-events: none; transition: transform .2s, filter .2s; }
 
 /* пристыкованный редактор промптов в Камелоте: рамка и фон как у окон-крепостей (роль хозяина не должна снять золотую рамку) */
-html body.col-on[data-col-appearance="camelot"] #completion_prompt_manager_popup.col-pm-docked {
+body.col-on[data-col-appearance="camelot"] #completion_prompt_manager_popup.col-pm-docked {
   overflow: visible; background: var(--col-card); border: 1px solid var(--col-gold); border-radius: 0;
   box-shadow: inset 0 0 0 5px var(--col-card), inset 0 0 0 6px color-mix(in srgb, var(--col-gold) 55%, transparent), 0 24px 50px -18px var(--col-shadow);
 }

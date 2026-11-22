@@ -41,7 +41,7 @@ export function startChatMenu(doc, { settings, save, shared }) {
   let watcher = null;
   if (!adopt()) {
     // Таверна достраивает меню расширений уже после старта
-    watcher = new view.MutationObserver(() => { if (adopt()) { watcher.disconnect(); watcher = null; tidy(); } });
+    watcher = new view.MutationObserver(() => { if (adopt()) { watcher.disconnect(); watcher = null; view.setTimeout(applyHidden, 0); } });
     watcher.observe(doc.body, { childList: true });
     undo.push(() => watcher?.disconnect());
   }
@@ -53,17 +53,32 @@ export function startChatMenu(doc, { settings, save, shared }) {
     const fa = [...(icon?.classList ?? [])].filter(c => c.startsWith('fa-') && !FA_SKIP.has(c));
     return fa.length ? fa.join(' ') : fallback;
   };
-  /** Все пункты обоих меню без повторов id. */
+  /**
+   * Ключ пункта: его id, а если id нет (так сделаны, например, пункты «Тавернного помощника»), то «txt:» и подпись.
+   * Ключ записывается в data-col-menu-key, по нему пункт находится и прячется так же, как пункт с id.
+   */
+  const keyOf = el => {
+    if (el.id) return el.id;
+    if (!el.dataset.colMenuKey) {
+      const label = labelOf(el);
+      if (!label) return '';
+      el.dataset.colMenuKey = `txt:${label}`;
+    }
+    return el.dataset.colMenuKey;
+  };
+  const EXT_ITEMS = '.extension_container > div, :scope > div:not(.extension_container)';
+  /** Все пункты обоих меню без повторов. */
   const items = () => {
     const seen = new Set(), out = [];
     const push = (el, group, fallback) => {
-      if (!el.id || seen.has(el.id)) return;
-      seen.add(el.id);
-      out.push({ id: el.id, title: labelOf(el), fa: iconOf(el, fallback), group });
+      const key = keyOf(el);
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      out.push({ id: key, title: labelOf(el), fa: iconOf(el, fallback), group });
     };
     for (const el of options.querySelectorAll('.options-content > a[id]')) push(el, 'Чат', 'fa-circle');
     const ext = doc.getElementById('extensionsMenu');
-    if (ext) for (const el of ext.querySelectorAll('.extension_container > div[id], :scope > div[id]:not(.extension_container)')) push(el, 'Расширения', 'fa-bolt');
+    if (ext) for (const el of ext.querySelectorAll(EXT_ITEMS)) push(el, 'Расширения', 'fa-bolt');
     return out;
   };
 
@@ -74,7 +89,11 @@ export function startChatMenu(doc, { settings, save, shared }) {
   undo.push(() => style.remove());
   const esc2 = id => (view.CSS?.escape ? view.CSS.escape(id) : id.replace(/[^\w-]/g, '\\$&'));
   const applyHidden = () => {
-    style.textContent = M.hidden.map(id => `body.col-on #options #${esc2(id)}{display:none!important}`).join('\n');
+    items();   // проставляет ключи пунктам без id
+    const quote = text => text.replace(/["\\]/g, '\\$&');
+    style.textContent = M.hidden.map(id => (id.startsWith('txt:')
+      ? `body.col-on #options [data-col-menu-key="${quote(id)}"]{display:none!important}`
+      : `body.col-on #options #${esc2(id)}{display:none!important}`)).join('\n');
     tidy();
   };
   /** Разделители без видимых пунктов рядом прячем, чтобы не оставались пустые линии. */
@@ -92,6 +111,18 @@ export function startChatMenu(doc, { settings, save, shared }) {
     } catch (error) { report('разделители меню', error); }
   }
   applyHidden();
+  // расширения достраивают свои пункты позже (Teleport): помечаем их и применяем скрытие по мере появления
+  {
+    let timer = null;
+    const later = () => { view.clearTimeout(timer); timer = view.setTimeout(applyHidden, 120); };
+    const menu = doc.getElementById('extensionsMenu');
+    if (menu) {
+      const watch = new view.MutationObserver(later);
+      watch.observe(menu, { childList: true, subtree: true });
+      undo.push(() => watch.disconnect());
+    }
+    undo.push(() => view.clearTimeout(timer));
+  }
   // видимость родных пунктов меняет сама Таверна при открытии меню: пересчитываем после открытия
   const button = doc.getElementById('options_button');
   const onOpen = () => view.setTimeout(tidy, 60);
